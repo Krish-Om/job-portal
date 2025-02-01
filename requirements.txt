@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]  # For running the development server
+pydantic
+sqlalchemy
+psycopg2-binary  # PostgreSQL database driver (or appropriate driver for your DB)
+python-dotenv  # For loading environment variables from .env files
+alembic  # For database migrations
+pytest  # For testing
+pytest-asyncio # For testing async code
+fastapi-jwt-auth  # For JWT authentication (or python-jose)
+passlib[bcrypt]  # For password hashing
+email-validator # For email validation
+requests # For making HTTP requests (if needed for testing or other tasks)
+# Add any other dependencies your project requires here.
