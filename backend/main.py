@@ -1,16 +1,19 @@
 from fastapi import FastAPI
-from .routers import auth, employers, job_seekers, jobs, applications, admins  # Import all your routers
-from .models import Base  # Import the base for database models
-from .database import engine  # Import the database engine
+# from .routers import auth, employers, job_seekers, jobs, applications, admins  # Import all your routers
+# from .models import Base  # Import the base for database models
+# from .database import engine  # Imp ort the database engine
 from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
 
-Base.metadata.create_all(bind=engine)  # Create database tables (if they don't exist)
+# Base.metadata.create_all(bind=engine)  # Create database tables (if they don't exist)
 
 app = FastAPI()
 
+@app.get("/",description="root endpoint",tags=["root"])
+async def root():
+    return "Hello World"
 # CORS (Cross-Origin Resource Sharing) - Configure as needed for your frontend
 origins = [
-    "http://localhost",  # Or your frontend's URL(s)
+    "http://localhost:8000",  # Or your frontend's URL(s)
     "http://localhost:3000",  # Example if your React app runs on port 3000
     # Add other origins as needed (e.g., your deployed frontend URL)
 ]
@@ -23,11 +26,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api/auth")
-app.include_router(employers.router, prefix="/api/employers")
-app.include_router(job_seekers.router, prefix="/api/job_seekers")
-app.include_router(jobs.router, prefix="/api/jobs")
-app.include_router(applications.router, prefix="/api/applications")
-app.include_router(admins.router, prefix="/api/admins")
+# app.include_router(auth.router, prefix="/api/auth")
+# app.include_router(employers.router, prefix="/api/employers")
+# app.include_router(job_seekers.router, prefix="/api/job_seekers")
+# app.include_router(jobs.router, prefix="/api/jobs")
+# app.include_router(applications.router, prefix="/api/applications")
+# app.include_router(admins.router, prefix="/api/admins")
 
 # ... any other configurations (middleware, exception handlers, etc.)
