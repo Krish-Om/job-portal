@@ -8,4 +8,4 @@ A RESTful API for a job portal application built with FastAPI and SQLAlchemy. Th
 - SQLAlchemy
 - PostgreSQL
 - Pydantic
-- Python 3.x
+- Python
