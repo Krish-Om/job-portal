@@ -2,7 +2,7 @@ from .base import Base
 from sqlalchemy import Column,Integer,String, ForeignKey,Text
 from sqlalchemy.orm import relationship
 class Employer(Base):
-    __table__name = "employers"
+    __tablename__ = "employers"
     id = Column(Integer,primary_key=True)
     company_name =Column(String,nullable=False) 
     email = Column(String,nullable=False)

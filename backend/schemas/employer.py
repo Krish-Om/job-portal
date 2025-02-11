@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 
-class EmployeCreate(BaseModel):
+class EmployerCreate(BaseModel):
     company_name: str
     email: EmailStr
     password: str
@@ -10,5 +10,5 @@ class EmployeCreate(BaseModel):
         orm_mode = True
 
 
-class Employer(EmployeCreate):
+class Employer(EmployerCreate):
     id: int
