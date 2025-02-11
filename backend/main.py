@@ -1,13 +1,33 @@
 from fastapi import FastAPI
+from .routers import auth, employers, job_seekers, jobs, applications, admins  # Import all your routers
+from .models import Base  # Import the base for database models
+from .database import engine  # Import the database engine
+from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
+
+Base.metadata.create_all(bind=engine)  # Create database tables (if they don't exist)
 
 app = FastAPI()
 
+# CORS (Cross-Origin Resource Sharing) - Configure as needed for your frontend
+origins = [
+    "http://localhost",  # Or your frontend's URL(s)
+    "http://localhost:3000",  # Example if your React app runs on port 3000
+    # Add other origins as needed (e.g., your deployed frontend URL)
+]
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+app.include_router(auth.router, prefix="/api/auth")
+app.include_router(employers.router, prefix="/api/employers")
+app.include_router(job_seekers.router, prefix="/api/job_seekers")
+app.include_router(jobs.router, prefix="/api/jobs")
+app.include_router(applications.router, prefix="/api/applications")
+app.include_router(admins.router, prefix="/api/admins")
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+# ... any other configurations (middleware, exception handlers, etc.)
