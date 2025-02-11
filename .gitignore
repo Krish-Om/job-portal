@@ -38,3 +38,7 @@ build/
 
 # Django local settings
 local_settings.py
+
+
+
+*.http
