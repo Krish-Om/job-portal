@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import employers  # Import all your routers
+from app.routers import employers  # Import all your routers
 from .models import Base  # Import the base for database models
 from .database import engine  # Imp ort the database engine
 from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
@@ -8,9 +8,12 @@ Base.metadata.create_all(bind=engine)  # Create database tables (if they don't e
 
 app = FastAPI()
 
-@app.get("/",description="root endpoint",tags=["root"])
+
+@app.get("/", description="root endpoint", tags=["root"])
 async def root():
     return "Hello World"
+
+
 # CORS (Cross-Origin Resource Sharing) - Configure as needed for your frontend
 origins = [
     "http://localhost:8000",  # Or your frontend's URL(s)
@@ -34,3 +37,4 @@ app.include_router(employers.router, prefix="/api/employers")
 # app.include_router(admins.router, prefix="/api/admins")
 
 # ... any other configurations (middleware, exception handlers, etc.)
+
