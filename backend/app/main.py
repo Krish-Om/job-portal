@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.routers import employers  # Import all your routers
-from .models import Base  # Import the base for database models
-from .database import engine  # Imp ort the database engine
+from app.models.base import Base  # Import the base for database models
+from app.database import engine  # Imp ort the database engine
 from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
 
 Base.metadata.create_all(bind=engine)  # Create database tables (if they don't exist)

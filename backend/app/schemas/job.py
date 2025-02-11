@@ -10,7 +10,7 @@ class JobCreate(BaseModel):
     employer_id: int
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 class Job(JobCreate):

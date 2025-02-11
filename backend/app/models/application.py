@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from .base import Base
 from datetime import datetime
 
+from .base import Base
 class Application(Base):
     __tablename__ = "applications"
 

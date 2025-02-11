@@ -1,6 +1,8 @@
-from .base import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column,Integer,Nullable,Text,String
+
+from .base import Base
+
 class JobSeeker(Base):
     __tablename__ = "job_seekers"
 

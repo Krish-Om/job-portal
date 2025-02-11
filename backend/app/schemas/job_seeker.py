@@ -8,7 +8,7 @@ class JobSeekerCreate(BaseModel):
     resume_url: str | None = None
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 class JobSeeker(JobSeekerCreate):

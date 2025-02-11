@@ -8,7 +8,7 @@ class ApplicationCreate(BaseModel):
     status: str = "pending"
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 class Application(ApplicationCreate):

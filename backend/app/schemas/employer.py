@@ -7,7 +7,7 @@ class EmployerCreate(BaseModel):
     password: str
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 class Employer(EmployerCreate):
