@@ -1,5 +1,5 @@
 fastapi~=0.115.8
 pydantic
 SQLAlchemy
-
+passlib[bcrypt]
 python-dotenv
