@@ -10,7 +10,7 @@ router = APIRouter(
     dependencies=[Depends(get_db)]
 )
 
-@router.post("/",response_model=EmployerResponse,status_code=status.HTTP_201_CREATED,)
+@router.post("/",response_model=EmployerResponse,status_code=status.HTTP_201_CREATED)
 async def create_employer(employer:EmployerCreate,db:Session = Depends(get_db)):
     hashed_password = hash_password(employer.password)
     employer.password = hashed_password

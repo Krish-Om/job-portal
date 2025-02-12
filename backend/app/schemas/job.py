@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
 
 
 class JobCreate(BaseModel):
@@ -8,10 +8,10 @@ class JobCreate(BaseModel):
     location: str | None = None
     salary: str | None = None
     employer_id: int
-
-    class Config:
-        form_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Job(JobCreate):
     id: int
+
+    

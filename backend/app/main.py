@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import employers  # Import all your routers
+from app.routers import employers,job_seekers  # Import all your routers
 from app.models.base import Base  # Import the base for database models
 from app.database import engine  # Imp ort the database engine
 from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
@@ -31,7 +31,7 @@ app.add_middleware(
 
 # app.include_router(auth.router, prefix="/api/auth")
 app.include_router(employers.router, prefix="/api/employers")
-# app.include_router(job_seekers.router, prefix="/api/job_seekers")
+app.include_router(job_seekers.router, prefix="/api/job_seekers")
 # app.include_router(jobs.router, prefix="/api/jobs")
 # app.include_router(applications.router, prefix="/api/applications")
 # app.include_router(admins.router, prefix="/api/admins")
