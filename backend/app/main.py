@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import employers,job_seekers  # Import all your routers
+from app.routers import employers, job_seekers  # Import all your routers
 from app.models.base import Base  # Import the base for database models
 from app.database import engine  # Imp ort the database engine
 from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
@@ -11,7 +11,7 @@ app = FastAPI()
 
 @app.get("/", description="root endpoint", tags=["root"])
 async def root():
-    return "Hello World"
+    return {"msg": "Hello World fastapi backend app"}
 
 
 # CORS (Cross-Origin Resource Sharing) - Configure as needed for your frontend
@@ -37,4 +37,3 @@ app.include_router(job_seekers.router, prefix="/api/job_seekers")
 # app.include_router(admins.router, prefix="/api/admins")
 
 # ... any other configurations (middleware, exception handlers, etc.)
-
