@@ -1,14 +1,20 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr,ConfigDict
 
 
-class EmployerCreate(BaseModel):
+class EmployerBase(BaseModel):
     company_name: str
     email: EmailStr
-    password: str
 
-    class Config:
-        form_attributes = True
+class EmployerCreate(EmployerBase):
+    password:str
+    model_config = ConfigDict(from_attributes=True)
 
+class EmployerInDB(EmployerBase):
+    id:int
+    hashed_password:str
+    model_config = ConfigDict(from_attributes=True)
 
-class Employer(EmployerCreate):
-    id: int
+    
+class EmployerResponse(EmployerBase):
+    id :int
+    model_config = ConfigDict(from_attributes=True)

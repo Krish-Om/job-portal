@@ -1,14 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
+
+class AdminBase(BaseModel):
+    username:str
+class AdminCreate(AdminBase):
+    password:str
+    model_config = ConfigDict(form_attributes=True)
 
 
-class AdminCreate(BaseModel):
-    username: str
-    password: str
-
-    class Config:
-        form_attributes = True
-
-
-class Admin(AdminCreate):
+class AdminResponse(AdminBase):
     id: int
-
+    model_config= ConfigDict(from_attributes=True)

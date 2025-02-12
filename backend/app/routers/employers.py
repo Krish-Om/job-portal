@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends,HTTPException,status
 from sqlalchemy.orm import Session
-from app.schemas.employer import EmployerCreate, Employer
+from app.schemas.employer import EmployerCreate, EmployerResponse
 from app.services import employer as employer_service
 from app.dependencies import get_db
 from app.utils.security import hash_password
@@ -10,13 +10,13 @@ router = APIRouter(
     dependencies=[Depends(get_db)]
 )
 
-@router.post("/",response_model=Employer,status_code=status.HTTP_201_CREATED,)
+@router.post("/",response_model=EmployerResponse,status_code=status.HTTP_201_CREATED,)
 async def create_employer(employer:EmployerCreate,db:Session = Depends(get_db)):
     hashed_password = hash_password(employer.password)
     employer.password = hashed_password
     return employer_service.create_employer(db=db,employer=employer)
 
-@router.get("/{employer_id}",response_model=Employer)
+@router.get("/{employer_id}",response_model=EmployerResponse)
 async def get_employer(employer_id :int,db:Session = Depends(get_db)):
     employer = employer_service.get_employer_by_id(db,employer_id)
     if not employer:
@@ -24,7 +24,7 @@ async def get_employer(employer_id :int,db:Session = Depends(get_db)):
     return employer
 
 
-@router.get("/",response_model=list[Employer])
+@router.get("/",response_model=list[EmployerResponse])
 async def get_all_employers(db:Session = Depends(get_db),skip:int=0,limit:int = 10):
     employers:list = employer_service.get_all_employers(db,skip=skip,limit=limit)
     return employers
@@ -35,12 +35,13 @@ async def get_all_employers(db:Session = Depends(get_db),skip:int=0,limit:int = 
 async def update_employer(employer_id: int,employer:EmployerCreate,db:Session = Depends(get_db)):
     updated_employer = employer_service.update_employer(db,employer_id,employer)
 
-    if not update_employer:
+    if not updated_employer:
         raise HTTPException(
             status_code=404,
             detail="Employer not found"
         )
-    return update_employer
+    return updated_employer
+
 
 @router.delete("/{employer_id}")
 async def delete_employer(employer_id:int,db:Session = Depends(get_db)):
