@@ -12,4 +12,4 @@ class JobSeeker(Base):
     hashed_password = Column(String, nullable=False)  # Store hashed password
     resume_url = Column(Text,nullable=True) #stores the resume url
 
-    applications = relationship("Application", back_populates="job_seeker")
+    applications = relationship("Application", back_populates="job_seeker",cascade="all")

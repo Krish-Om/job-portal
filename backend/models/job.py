@@ -30,6 +30,6 @@ class Job(Base):
     )
 
     # Relationships
-    employer = relationship("Employer", back_populates="jobs")
-    applications = relationship("Application", back_populates="job")
+    employer = relationship("Employer", back_populates="jobs",cascade="all")
+    applications = relationship("Application", back_populates="job",cascade="all")
 

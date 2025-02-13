@@ -10,7 +10,7 @@ class Employer(Base):
     email = Column(String,nullable=False)
     hashed_password = Column(String,nullable =False)
     #relationship with jobs that is it post jobs
-    jobs = relationship("Job",back_populates="employer",lazy="dynamic")
+    jobs = relationship("Job",back_populates="employer",lazy="dynamic",cascade="all")
     
 
     def to_response(self):

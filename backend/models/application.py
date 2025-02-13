@@ -14,4 +14,4 @@ class Application(Base):
     applied_at = Column(DateTime(timezone=True), server_default=func.now(),nullable=False)  # Timestamp of application
 
     job = relationship("Job", back_populates="applications")
-    job_seeker = relationship("JobSeeker", back_populates="applications")
+    job_seeker = relationship("JobSeeker", back_populates="applications",cascade="all")

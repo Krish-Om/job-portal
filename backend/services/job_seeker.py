@@ -22,8 +22,8 @@ def get_all_job_seeker(db:Session,skip:int = 0,limit:int = 10):
     return job_seekers
 
 
-def get_job_seekers_by_name(db:Session,job_seeker_name:str):
-    return db.query(JobSeeker).filter(JobSeeker.name == job_seeker_name).first()
+def get_job_seekers_by_id(db:Session,job_seeker_id:int):
+    return db.query(JobSeeker).filter(JobSeeker.id == job_seeker_id).first()
 
 def update_job_seeker(db:Session,id:int,job_seeker : JobSeekerCreate):
     db_job_seeker = db.query(JobSeeker).filter(JobSeeker.id == id).first()
@@ -35,18 +35,14 @@ def update_job_seeker(db:Session,id:int,job_seeker : JobSeekerCreate):
                 setattr(db_job_seeker,key,value)
 
     if job_seeker.password:
-        db_job_seeker.hashed_password = hash_password(job_seeker.password)\
-        
-
+        db_job_seeker.hashed_password = hash_password(job_seeker.password)
     db.commit()
     db.refresh(db_job_seeker)
-
     return db_job_seeker
 
 
-
-def delete_employer(db:Session, id:int):
-    db_job_seeker = db.query(JobSeeker).filter(JobSeeker.id == id).first()
+def delete_job_seeker_by_id(db:Session, job_seeker_id:int):
+    db_job_seeker = db.query(JobSeeker).filter(JobSeeker.id == job_seeker_id).first()
     if db_job_seeker:
         db.delete(db_job_seeker)
         db.commit()
