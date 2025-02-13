@@ -15,33 +15,33 @@ router = APIRouter(
 
 
 @router.post("/",response_model=JobSeekerResponse,status_code=status.HTTP_201_CREATED)
-async def create_jobSeeker(job_seeker:JobSeekerCreate,db:Session = Depends(get_db)):
+async def create_job_seeker(job_seeker:JobSeekerCreate,db:Session = Depends(get_db)):
     hashed_password = hash_password(job_seeker.password)
     job_seeker.password = hashed_password
     return jobService.create_job_seeker(db=db,job_seeker=job_seeker)
 
 @router.get("/",response_model=list[JobSeekerResponse],status_code=status.HTTP_200_OK)
-async def get_all_jobSeekers(db:Annotated[Session,Depends(get_db)],skip:int=0,limit:int =10):
+async def get_all_job_seekers(db:Annotated[Session,Depends(get_db)],skip:int=0,limit:int =10):
     try:
-        jobSeekers:list = jobService.get_all_job_seeker(db,skip=skip,limit=limit)
-        if not jobSeekers:
+        job_seekers:list = jobService.get_all_job_seeker(db,skip=skip,limit=limit)
+        if not job_seekers:
             return JSONResponse(
                 status_code=404,
                 content={"detail":"No list of job seekers found"}
             )
-        return jobSeekers                
+        return job_seekers
     except HTTPException as e:
         return JSONResponse(
             status_code=500,
             content={"detail":str(e),"status_code":500}
         )
 
-@router.get("/{job_seeker_id}",response_model=JobSeekerResponse,
+@router.get("/{job_seeker_name}",response_model=JobSeekerResponse,
             status_code=status.HTTP_200_OK,
             responses={404:{"model":HTTPError}})
-async def get_jobSeeker_by_name(name:str,db:Annotated[Session,Depends(get_db)]):
+async def get_job_seeker_by_name(name:str,db:Annotated[Session,Depends(get_db)]):
     try:
-        job_seeker = jobService.get_job_seekers_by_name(db=db,name=name)
+        job_seeker = jobService.get_job_seekers_by_name(db=db,job_seeker_name=name)
         if not job_seeker:
             return JSONResponse(
                 status_code=404,
