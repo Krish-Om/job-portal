@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from app.main import app
+from main import app
 # from app.routers import employers
 from backend.app.schemas.employer import EmployerResponse
 client = TestClient(app)
