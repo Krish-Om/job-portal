@@ -2,11 +2,11 @@ from typing import Annotated
 from fastapi import APIRouter,Depends,HTTPException,status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from app.schemas.job_seeker import JobSeekerCreate,JobSeekerResponse
-from app.services import job_seeker as jobService
-from app.dependencies import get_db
-from app.utils.security import hash_password
-from app.exceptions import HTTPError
+from backend.schemas.job_seeker import JobSeekerCreate,JobSeekerResponse
+from backend.services import job_seeker as jobService
+from backend.dependencies import get_db
+from backend.utils.security import hash_password
+from backend.exceptions import HTTPError
 
 router = APIRouter(
     tags=["job-seekers"],
