@@ -36,4 +36,9 @@ app.include_router(job_seekers.router, prefix="/api/job_seekers")
 # app.include_router(applications.router, prefix="/api/applications")
 # app.include_router(admins.router, prefix="/api/admins")
 
-# ... any other configurations (middleware, exception handlers, etc.)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000,reload=True)
+
