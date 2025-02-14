@@ -4,6 +4,7 @@ from backend.models.base import Base  # Import the base for database models
 from backend.database import engine  # Imp ort the database engine
 from fastapi.middleware.cors import CORSMiddleware  # For handling CORS (if needed)
 
+
 Base.metadata.create_all(bind=engine)  # Create database tables (if they don't exist)
 
 app = FastAPI()
