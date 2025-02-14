@@ -7,3 +7,5 @@ psycopg2-binary
 httpx
 pytest
 pyjwt
+passlib[bcrypt]
+fastapi-jwt-auth
