@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from backend.schemas.employer import EmployerCreate, EmployerResponse
 from backend.services import employer as employer_service
 from backend.dependencies import get_db
-from backend.utils.security import hash_password
+from backend.services.auth import hash_password
 
 router = APIRouter(
     tags=["employers"],
