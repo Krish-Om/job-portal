@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from backend.models.employer import Employer as EmployerModel
 from backend.schemas.employer import EmployerCreate
-from backend.services.auth import hash_password
+from backend.utils.security import hash_password
 
 
 def create_employer(db: Session, employer: EmployerCreate):

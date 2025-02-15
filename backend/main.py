@@ -30,7 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api/auth")
+# app.include_router(auth.router, prefix="/api/auth")
 app.include_router(employers.router, prefix="/api/employers")
 app.include_router(job_seekers.router, prefix="/api/job_seekers")
 # app.include_router(jobs.router, prefix="/api/jobs")

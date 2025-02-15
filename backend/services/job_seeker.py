@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from backend.models.job_seeker import JobSeeker
 from backend.schemas.job_seeker import JobSeekerCreate
-from backend.services.auth import hash_password
+from backend.utils.security import hash_password
 
 def create_job_seeker(db:Session,job_seeker:JobSeekerCreate):
     db_job_seeker = JobSeeker(
