@@ -1,6 +1,5 @@
 fastapi[standard]
 pydantic[email]
-SQLAlchemy
 passlib[bcrypt]
 python-dotenv
 psycopg2-binary
@@ -9,3 +8,4 @@ pytest
 pyjwt
 passlib[bcrypt]
 fastapi-jwt-auth
+sqlmodel

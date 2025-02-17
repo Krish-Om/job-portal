@@ -1,13 +1,11 @@
-from pydantic import BaseModel,ConfigDict
+from sqlmodel import SQLModel
 from datetime import datetime
 
 
-class ApplicationBase(BaseModel):
+class ApplicationBase(SQLModel):
     job_id: int
     job_seeker_id: int
     status: str = "pending"
-
-    model_config = ConfigDict(form_attributes=True)
 
 class ApplicationCreate(ApplicationBase):
     pass
