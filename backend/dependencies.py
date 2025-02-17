@@ -1,18 +1,14 @@
-from typing import Generator
+from typing import Annotated
+from fastapi import Depends
+from sqlmodel import Session
+from fastapi.security import OAuth2PasswordBearer
+from .database import get_db
 
-from sqlalchemy.orm import Session
-from backend.database import SessionLocal
 
-def get_db() -> Generator[Session,None,None]:
-    """
-    Dependency function to get a database session.
+# Database dependency
+SessionDep = Annotated[Session, Depends(get_db)]
 
-    Yields:
-        Session: A database session.
-    """
+# OAuth2 scheme for token authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+TokenDep = Annotated[str, Depends(oauth2_scheme)]
 
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
