@@ -1,0 +1,1 @@
+# The file /job-portal-api/job-portal-api/src/core/__init__.py is intentionally left blank.
