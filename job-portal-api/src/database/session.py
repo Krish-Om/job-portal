@@ -1,10 +1,25 @@
-from sqlmodel import create_engine, Session
-from src.core.config import settings
+from sqlmodel import SQLModel, Session, create_engine
+from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
+import os
 
-DATABASE_URL = settings.database_url
+load_dotenv()
 
-engine = create_engine(DATABASE_URL)
 
-def get_session() -> Session:
-    with Session(engine) as session:
-        yield session
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+engine = create_engine(DATABASE_URL, echo=True)
+
+def init_db():
+    SQLModel.metadata.drop_all(engine)  # Drop existing tables
+    SQLModel.metadata.create_all(engine)  # Create new tables
+
+def get_db():
+    db = Session(engine)
+    try:
+        yield db
+    finally:
+        db.close()
+
+def SessionLocal():
+    return Session(engine)
