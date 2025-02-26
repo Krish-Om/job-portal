@@ -41,7 +41,7 @@ const Register = () => {
             const { confirmPassword, ...userData } = formData;
             
             const response = await axios.post(`${API_URL}/auth/register`, userData);
-
+            console.log(response.data)
             // Redirect to login page after successful registration
             navigate('/login', { state: { message: 'Registration successful! Please log in.' } });
         } catch (err) {
@@ -51,6 +51,7 @@ const Register = () => {
                 'Registration failed. Please try again.'
             );
         } finally {
+            console.log('API_URL:', import.meta.env.VITE_API_URL);
             console.log(formData);
             setLoading(false);
         }

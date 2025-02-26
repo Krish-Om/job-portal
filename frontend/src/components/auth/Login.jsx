@@ -7,6 +7,7 @@ import API_URL from '../../constants';
 const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
     const [formData, setFormData] = useState({
         username: '',  // Changed from email to username
         password: ''
@@ -32,8 +33,14 @@ const Login = () => {
 
     const handleLoginSuccess = (data) => {
         localStorage.setItem('token', data.access_token);
-        localStorage.setItem('userRole', data.role); // Add this line
-        navigate('/jobs');
+        localStorage.setItem('userRole', data.role);
+        
+        // Redirect based on role
+        if (data.role === 'EMPLOYER') {
+            navigate('/employer/dashboard');
+        } else {
+            navigate('/jobseeker/profile');
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -48,7 +55,7 @@ const Login = () => {
             formDataObj.append('password', formData.password);
             
             const response = await axios.post(
-                `${API_URL}+/auth/login`, 
+                `${API_URL}/auth/login`, 
                 formDataObj,
                 {
                     headers: {
