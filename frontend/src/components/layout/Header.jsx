@@ -6,6 +6,7 @@ const Header = () => {
     const navigate = useNavigate();
     const isLoggedIn = localStorage.getItem('token');
     const userRole = localStorage.getItem('userRole');
+    const isEmployer = userRole === 'EMPLOYER';
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -13,50 +14,41 @@ const Header = () => {
         navigate('/login');
     };
 
-    const getNavLinks = () => {
-        if (!isLoggedIn) {
-            return (
-                <>
-                    <li><Link to="/login">Login</Link></li>
-                    <li><Link to="/register">Register</Link></li>
-                </>
-            );
-        }
-
-        if (userRole === 'EMPLOYER') {
-            return (
-                <>
-                    <li><Link to="/employer/dashboard">Dashboard</Link></li>
-                    <li><Link to="/employer/jobs/create">Post Job</Link></li>
-                    <li><Link to="/employer/jobs">Manage Jobs</Link></li>
-                    <li><Link to="/employer/profile">Profile</Link></li>
-                </>
-            );
-        }
-
-        return (
-            <>
-                <li><Link to="/jobseeker/applications">My Applications</Link></li>
-                <li><Link to="/jobseeker/profile">Profile</Link></li>
-            </>
-        );
-    };
-
     return (
         <header className="header">
             <div className="logo">
                 <Link to="/">Job Portal</Link>
             </div>
-            <nav>
+            <nav className="nav">
                 <ul>
                     <li><Link to="/jobs">Browse Jobs</Link></li>
-                    {getNavLinks()}
-                    {isLoggedIn && (
-                        <li>
-                            <button onClick={handleLogout} className="logout-btn">
-                                Logout
-                            </button>
-                        </li>
+                    {!isLoggedIn ? (
+                        <>
+                            <li><Link to="/login">Login</Link></li>
+                            <li><Link to="/register">Register</Link></li>
+                        </>
+                    ) : isEmployer ? (
+                        <>
+                            <li><Link to="/employer/dashboard">Dashboard</Link></li>
+                            <li><Link to="/employer/jobs/create">Post Job</Link></li>
+                            <li><Link to="/employer/jobs">Manage Jobs</Link></li>
+                            <li><Link to="/employer/profile">Profile</Link></li>
+                            <li>
+                                <button onClick={handleLogout} className="logout-btn">
+                                    Logout
+                                </button>
+                            </li>
+                        </>
+                    ) : (
+                        <>
+                            <li><Link to="/jobseeker/applications">My Applications</Link></li>
+                            <li><Link to="/jobseeker/profile">Profile</Link></li>
+                            <li>
+                                <button onClick={handleLogout} className="logout-btn">
+                                    Logout
+                                </button>
+                            </li>
+                        </>
                     )}
                 </ul>
             </nav>

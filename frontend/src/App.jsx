@@ -7,6 +7,10 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import EmployerProfile from './components/profiles/EmployerProfile';
 import JobSeekerProfile from './components/profiles/JobSeekerProfile';
+import EmployerDashboard from './components/employer/EmployerDashboard';
+import CreateJob from './components/employer/CreateJob';
+import ManageJobs from './components/employer/ManageJobs';
+import Applications from './components/jobseeker/Applications';
 import PrivateRoute from './components/auth/PrivateRoute';
 import './App.css';
 
