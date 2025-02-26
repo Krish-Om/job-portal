@@ -8,7 +8,7 @@ from src.security import get_current_user
 
 router = APIRouter()
 
-@router.post("/applications", response_model=Application)
+@router.post("/", response_model=Application)
 def create_application(
     application: Application, 
     current_user: User = Depends(get_current_user),
@@ -30,7 +30,7 @@ def create_application(
     session.refresh(application)
     return application
 
-@router.get("/applications/{application_id}", response_model=Application)
+@router.get("/{application_id}", response_model=Application)
 def read_application(
     application_id: int, 
     current_user: User = Depends(get_current_user),
@@ -47,7 +47,7 @@ def read_application(
     
     return application
 
-@router.get("/applications", response_model=list[Application])
+@router.get("/", response_model=list[Application])
 def read_applications(
     skip: int = 0, 
     limit: int = 10, 

@@ -6,9 +6,12 @@ import Footer from './Footer';
 const Layout = ({ children }) => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem('token');
+  const userRole = localStorage.getItem('userRole');
+  const isEmployer = userRole === 'EMPLOYER';
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
     navigate('/login');
   };
 
@@ -28,7 +31,14 @@ const Layout = ({ children }) => {
               </>
             ) : (
               <>
-                <li><Link to="/applications">My Applications</Link></li>
+                {isEmployer ? (
+                  <>
+                    <li><Link to="/jobs/create" className="create-job-btn">Create Job</Link></li>
+                    <li><Link to="/my-jobs">My Jobs</Link></li>
+                  </>
+                ) : (
+                  <li><Link to="/applications">My Applications</Link></li>
+                )}
                 <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
               </>
             )}
@@ -40,7 +50,7 @@ const Layout = ({ children }) => {
       </main>
       <footer className="footer">
         <Footer />
-       </footer>
+      </footer>
     </div>
   );
 };

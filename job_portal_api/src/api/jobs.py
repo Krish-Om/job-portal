@@ -86,7 +86,7 @@ def delete_job(
     session.commit()
     return {"message": "Job deleted successfully"}
 
-@router.post("/jobs/{job_id}/applications/", response_model=Application)
+@router.post("/{job_id}/applications/", response_model=Application)
 def apply_for_job(
     job_id: int, 
     application: Application, 

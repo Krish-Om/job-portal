@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/auth.css';
+import API_URL from '../../constants';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ const Register = () => {
             // Remove confirmPassword as it's not expected by the backend
             const { confirmPassword, ...userData } = formData;
             
-            const response = await axios.post('http://localhost:8000/auth/register', userData);
+            const response = await axios.post(`${API_URL}/auth/register`, userData);
 
             // Redirect to login page after successful registration
             navigate('/login', { state: { message: 'Registration successful! Please log in.' } });

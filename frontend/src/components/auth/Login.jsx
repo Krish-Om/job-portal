@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/auth.css';
+import API_URL from '../../constants';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -29,6 +30,12 @@ const Login = () => {
         }));
     };
 
+    const handleLoginSuccess = (data) => {
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('userRole', data.role); // Add this line
+        navigate('/jobs');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -41,7 +48,7 @@ const Login = () => {
             formDataObj.append('password', formData.password);
             
             const response = await axios.post(
-                'http://localhost:8000/auth/login', 
+                `${API_URL}+/auth/login`, 
                 formDataObj,
                 {
                     headers: {
@@ -51,7 +58,7 @@ const Login = () => {
             );
             
             // Store token in localStorage
-            localStorage.setItem('token', response.data.access_token);
+            handleLoginSuccess(response.data);
             
             // Redirect to jobs page or the page they were trying to access
             const redirectTo = location.state?.from || '/jobs';

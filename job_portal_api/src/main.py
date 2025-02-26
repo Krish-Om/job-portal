@@ -20,9 +20,9 @@ app.add_middleware(
 #     init_db()
 
 # Register routers
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
-app.include_router(applications.router, prefix="/applications", tags=["applications"])
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(jobs.router, prefix="/api/jobs", tags=["jobs"])
+app.include_router(applications.router, prefix="/api/applications", tags=["applications"])
 
 @app.get("/")
 def read_root():
