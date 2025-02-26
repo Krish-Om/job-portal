@@ -1,0 +1,120 @@
+/* Layout styles for the Elevate Workforce Portal */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: tan;
+}
+
+header {
+    background-color: #007bff;
+    /* color: white; */
+    padding: 1rem;
+    text-align: center;
+}
+
+footer {
+    /* background-color: #333; */
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.container {
+    max-width: full;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Layout Container */
+.layout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Header Styles */
+.header {
+  background-color: #f8f9fa;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+}
+
+.nav a {
+  color: #333;
+  text-decoration: none;
+  padding: 0.5rem;
+}
+
+.nav a:hover {
+  color: #007bff;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.logout-btn:hover {
+  color: #dc3545;
+}
+
+/* Main Content */
+.main-content {
+  /* flex: 1; */
+  display: flex;
+  padding: 2rem;
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  padding: 1rem;
+  text-align: center;
+  margin-top: auto;
+  border-top: 1px solid #e9ecef;
+}

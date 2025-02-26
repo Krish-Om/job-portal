@@ -3,8 +3,17 @@ from src.database.session import engine
 from src.database.init_db import init_db
 from src.models import user, job, application
 from src.api import auth, jobs, applications
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 # @app.on_event("startup")
 # async def on_startup():
