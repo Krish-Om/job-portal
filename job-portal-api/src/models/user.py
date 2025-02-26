@@ -1,7 +1,7 @@
 from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
-from pydantic import EmailStr, validator
+from pydantic import EmailStr, field_validator
 from src.utils.password import get_password_hash
 
 class UserRole(str, Enum):
@@ -14,7 +14,7 @@ class UserBase(SQLModel):
     role: UserRole
     is_active: bool = Field(default=True)
 
-    @validator('role')
+    @field_validator('role')
     def validate_role(cls, v):
         if v not in [UserRole.JOBSEEKER, UserRole.EMPLOYER]:
             raise ValueError('Role must be either jobseeker or employer')
