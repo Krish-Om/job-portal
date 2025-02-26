@@ -5,7 +5,9 @@ A RESTful API for a job portal application built with FastAPI and SQLAlchemy. Th
 
 ## 🛠️ Tech Stack
 - FastAPI
-- SQLAlchemy
+- SQLModel
 - PostgreSQL
-- Pydantic
 - Python
+- React + Vite
+- Javascript
+- Axios
