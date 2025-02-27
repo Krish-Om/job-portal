@@ -52,51 +52,92 @@ a:hover {
 
 /* Header Styles */
 .header {
-  background-color: #f8f9fa;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logo a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-  text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #007bff;
 }
 
 .nav ul {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .nav a {
-  color: #333;
-  text-decoration: none;
-  padding: 0.5rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 0.5rem;
+    transition: color 0.2s;
 }
 
 .nav a:hover {
-  color: #007bff;
+    color: #007bff;
+}
+
+.nav-button {
+    background: #007bff;
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    transition: background-color 0.2s !important;
+}
+
+.nav-button:hover {
+    background: #0056b3;
+    color: white !important;
+    text-decoration: none;
+}
+
+.create-job-btn {
+    background: #28a745 !important;
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    transition: background-color 0.2s !important;
+}
+
+.create-job-btn:hover {
+    background: #218838 !important;
+    color: white !important;
+    text-decoration: none;
 }
 
 .logout-btn {
-    background-color: #dc3545;
+    background: #dc3545;
     color: white;
-    padding: 8px 16px;
     border: none;
+    padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-weight: 500;
 }
 
 .logout-btn:hover {
-    background-color: #c82333;
+    background: #c82333;
 }
 
 /* Main Content */
@@ -118,19 +159,4 @@ a:hover {
   text-align: center;
   margin-top: auto;
   border-top: 1px solid #e9ecef;
-}
-
-/* Add these styles to your existing layout.css */
-
-.create-job-btn {
-    background-color: #28a745;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.2s;
-}
-
-.create-job-btn:hover {
-    background-color: #218838;
 }

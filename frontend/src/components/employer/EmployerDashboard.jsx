@@ -10,33 +10,26 @@ const EmployerDashboard = () => {
         activeJobs: 0,
         totalApplications: 0
     });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchDashboardData = async () => {
+        const fetchStats = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`${API_URL}/employer/dashboard`, {
+                const response = await axios.get(`${API_URL}/employer/stats`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setStats(response.data);
-            } catch (err) {
-                setError('Failed to load dashboard data');
-            } finally {
-                setLoading(false);
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
             }
         };
 
-        fetchDashboardData();
+        fetchStats();
     }, []);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div className="error-message">{error}</div>;
 
     return (
         <div className="dashboard-container">
-            <h2>Dashboard</h2>
+            <h1>Employer Dashboard</h1>
             <div className="stats-grid">
                 <div className="stat-card">
                     <h3>Total Jobs Posted</h3>
@@ -52,12 +45,8 @@ const EmployerDashboard = () => {
                 </div>
             </div>
             <div className="action-buttons">
-                <Link to="/employer/jobs/create" className="btn btn-primary">
-                    Post New Job
-                </Link>
-                <Link to="/employer/jobs" className="btn btn-secondary">
-                    Manage Jobs
-                </Link>
+                <Link to="/employer/jobs/create" className="btn-primary">Post New Job</Link>
+                <Link to="/employer/jobs" className="btn-secondary">Manage Jobs</Link>
             </div>
         </div>
     );

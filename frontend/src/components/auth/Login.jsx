@@ -34,48 +34,24 @@ const Login = () => {
     const handleLoginSuccess = (data) => {
         localStorage.setItem('token', data.access_token);
         localStorage.setItem('userRole', data.role);
-        
-        // Redirect based on role
-        if (data.role === 'EMPLOYER') {
-            navigate('/employer/dashboard');
-        } else {
-            navigate('/jobseeker/profile');
-        }
+        navigate(data.role === 'EMPLOYER' ? '/employer/dashboard' : '/jobseeker/profile');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
-
         try {
-            // The OAuth2 password flow expects form data, not JSON
-            const formDataObj = new FormData();
-            formDataObj.append('username', formData.username);
-            formDataObj.append('password', formData.password);
-            
-            const response = await axios.post(
-                `${API_URL}/auth/login`, 
-                formDataObj,
-                {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }
-            );
-            
-            // Store token in localStorage
-            handleLoginSuccess(response.data);
-            
-            // Redirect to jobs page or the page they were trying to access
-            const redirectTo = location.state?.from || '/jobs';
-            navigate(redirectTo);
+            const response = await authAPI.login({
+                username: formData.username,
+                password: formData.password
+            });
+            localStorage.setItem('token', response.data.access_token);
+            // Update role storage
+            const userResponse = await authAPI.getCurrentUser();
+            localStorage.setItem('userRole', userResponse.data.role);
+            navigate('/jobs');
         } catch (err) {
-            console.error('Login error:', err.response?.data);
-            setError(
-                err.response?.data?.detail || 
-                'Login failed. Please check your credentials.'
-            );
+            setError(err.response?.data?.detail || 'Login failed');
         } finally {
             setLoading(false);
         }

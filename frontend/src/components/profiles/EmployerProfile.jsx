@@ -4,49 +4,48 @@ import API_URL from '../../constants';
 
 const EmployerProfile = () => {
     const [profile, setProfile] = useState({
-        company_name: '',
+        companyName: '',
         industry: '',
-        website: '',
-        location: '',
-        about: ''
+        about: '',
+        location: ''
     });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${API_URL}/employer/profile`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setProfile(response.data);
+            } catch (error) {
+                console.error('Failed to fetch profile:', error);
+            }
+        };
+
         fetchProfile();
     }, []);
 
-    const fetchProfile = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_URL}/employers/profile`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setProfile(response.data);
-        } catch (err) {
-            setError('Failed to load profile');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-
     return (
         <div className="profile-container">
-            <h2>Company Profile</h2>
-            <div className="profile-section">
-                <h3>Company Details</h3>
-                <p><strong>Company Name:</strong> {profile.company_name}</p>
-                <p><strong>Industry:</strong> {profile.industry}</p>
-                <p><strong>Website:</strong> {profile.website}</p>
-                <p><strong>Location:</strong> {profile.location}</p>
-            </div>
-            <div className="profile-section">
-                <h3>About</h3>
-                <p>{profile.about}</p>
+            <h1>Company Profile</h1>
+            <div className="profile-card">
+                <div className="profile-field">
+                    <h3>Company Name</h3>
+                    <p>{profile.companyName}</p>
+                </div>
+                <div className="profile-field">
+                    <h3>Industry</h3>
+                    <p>{profile.industry}</p>
+                </div>
+                <div className="profile-field">
+                    <h3>Location</h3>
+                    <p>{profile.location}</p>
+                </div>
+                <div className="profile-field">
+                    <h3>About</h3>
+                    <p>{profile.about}</p>
+                </div>
             </div>
         </div>
     );

@@ -41,14 +41,12 @@ const ApplicationForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!localStorage.getItem('token')) {
-            navigate('/login', { state: { from: `/apply/${jobId}` }});
-            return;
-        }
-
         setSubmitting(true);
         try {
-            await applyForJob(jobId, formData);
+            await applicationsAPI.apply({
+                job_id: jobId,
+                ...formData
+            });
             navigate('/applications', { 
                 state: { message: 'Application submitted successfully!' }
             });

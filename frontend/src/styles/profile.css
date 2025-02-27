@@ -1,7 +1,7 @@
 .profile-container {
     max-width: 800px;
     margin: 2rem auto;
-    padding: 1rem;
+    padding: 0 2rem;
 }
 
 .profile-section {
@@ -53,4 +53,25 @@
 
 .logout-btn:hover {
     background: #c82333;
+}
+
+.profile-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-field {
+    margin-bottom: 1.5rem;
+}
+
+.profile-field h3 {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.profile-field p {
+    color: #333;
+    font-size: 1.1rem;
 }

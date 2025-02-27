@@ -1,13 +1,13 @@
 .dashboard-container {
     max-width: 1200px;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 2rem;
 }
 
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
     margin: 2rem 0;
 }
 
@@ -36,7 +36,7 @@
     margin-top: 2rem;
 }
 
-.btn {
+.btn-primary, .btn-secondary {
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     text-decoration: none;
