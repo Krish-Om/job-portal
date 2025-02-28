@@ -8,11 +8,10 @@ class Application(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
     job_id: int = Field(foreign_key="job.id")
-    resume_path: str
-    cover_letter: str
-    applied_date: datetime = Field(default=datetime.utcnow)
+    applied_date: datetime = Field(default=datetime.w)
     status: str = Field(default="pending")
     
+
     # Relationships
     job: "Job" = Relationship(back_populates="applications")
     applicant: User = Relationship(back_populates="applications")

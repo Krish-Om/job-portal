@@ -1,33 +1,58 @@
-import { createContext, useState, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export const AuthContext = createContext(null);
+const AuthContext = createContext(null);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const response = await authAPI.getCurrentUser();
-          setUser(response.data);
-        } catch (err) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userRole');
-        }
-      }
-      setLoading(false);
-    };
-
-    initAuth();
+    // Check for token and user role in localStorage
+    const token = localStorage.getItem('token');
+    const userRole = localStorage.getItem('userRole');
+    
+    if (token && userRole) {
+      setUser({
+        role: userRole
+      });
+    }
+    setLoading(false);
   }, []);
 
+  const login = (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('userRole', userData.role);
+    setUser(userData);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    setUser(null);
+  };
+
+  const value = {
+    user,
+    login,
+    logout,
+    loading
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
-      {!loading && children}
+    <AuthContext.Provider value={value}>
+      {children}
     </AuthContext.Provider>
   );
 };

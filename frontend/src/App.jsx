@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './components/Home';
 import JobList from './components/jobs/JobList';
@@ -14,11 +14,12 @@ import Applications from './components/jobseeker/Applications';
 import PrivateRoute from './components/auth/PrivateRoute';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
-import JobDetail from './components/JobDetail';
+import JobDetail from './components/JobDetail';  // Updated import path
 import './App.css';
 import './styles/dashboard.css';
 import './styles/profile.css';
 import './styles/jobs.css';
+import './styles/navbar.css';
 
 function App() {
     return (
@@ -32,28 +33,6 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/jobs/:id" element={<JobDetail />} />
                         <Route path="/jobs/create" element={<CreateJob />} />
-
-                        <Route path="/employer/*" element={
-                            <PrivateRoute allowedRole="EMPLOYER">
-                                <Routes>
-                                    <Route path="dashboard" element={<EmployerDashboard />} />
-                                    <Route path="profile" element={<EmployerProfile />} />
-                                    <Route path="jobs/create" element={<CreateJob />} />
-                                    <Route path="jobs" element={<ManageJobs />} />
-                                </Routes>
-                            </PrivateRoute>
-                        } />
-
-                        <Route path="/jobseeker/*" element={
-                            <PrivateRoute allowedRole="JOBSEEKER">
-                                <Routes>
-                                    <Route path="profile" element={<JobSeekerProfile />} />
-                                    <Route path="applications" element={<Applications />} />
-                                </Routes>
-                            </PrivateRoute>
-                        } />
-
-                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </main>
             </BrowserRouter>
