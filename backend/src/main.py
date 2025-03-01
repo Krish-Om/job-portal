@@ -27,12 +27,12 @@ app.add_middleware(
     allow_headers=["*"]   # this too but it works for now
 )
 
-@app.on_event("startup")
-async def on_startup():
-    # debugging stuff - spent 2 hours figuring out why auth wasn't working
-    print(f"SECRET_KEY exists: {'Yes' if os.getenv('SECRET_KEY') else 'No!!'}")
-    print(f"ALGORITHM exists: {'Yes' if os.getenv('ALGORITHM') else 'No!!'}")
-    init_db()
+# @app.on_event("startup")
+# async def on_startup():
+#     # debugging stuff - spent 2 hours figuring out why auth wasn't working
+#     print(f"SECRET_KEY exists: {'Yes' if os.getenv('SECRET_KEY') else 'No!!'}")
+#     print(f"ALGORITHM exists: {'Yes' if os.getenv('ALGORITHM') else 'No!!'}")
+#     init_db()
 
 # hook up all the API routes
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
