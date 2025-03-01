@@ -1,20 +1,10 @@
-Project Overview
-
-Create a new frontend application that interacts with the existing FastAPI backend for the Job Portal project. The frontend should be built using React and should provide a user-friendly interface for job seekers and employers to interact with the job portal.
-
-Tech Stack
-
-- React
-- Axios
-- React Router
-- CSS Modules or Styled Components
-
 Features
 
 1. **User Authentication:**
     - Register
     - Login
     - Logout
+
 
 2. **Job Listings:**
     - View all jobs
@@ -258,6 +248,7 @@ API Endpoints
 Models
 
  User Model
+ ```json
 {
     "id": "integer",
     "username": "string",
@@ -266,8 +257,10 @@ Models
     "role": "jobseeker" | "employer",
     "is_active": "boolean",
 }
+```
 
  Job Model
+ ```json
 {
     "id": "integer",
     "title": "string",
@@ -278,8 +271,10 @@ Models
     "posted_date": "datetime",
     "employer_id": "integer"
 }
+```
 
  Application Model
+ ```json
 {
     "id": "integer",
     "user_id": "integer",
@@ -289,3 +284,4 @@ Models
     "applied_date": "datetime",
     "status": "string"
 }
+```

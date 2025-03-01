@@ -1,28 +1,29 @@
-from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
+from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 
-class Job(SQLModel, table=True):
-    __tablename__ = "job"  # Explicitly set table name
+class JobBase(SQLModel):
+    title: str
+    description: str
+    location: str
+    category: str
+    company: str
     
-    id: int = Field(default=None, primary_key=True)
-    title: str = Field(max_length=255)
-    description: str = Field()
-    location: str = Field(max_length=255)
-    category: str = Field(max_length=100)
-    company: str = Field(max_length=255)
-    posted_date: datetime = Field(default=datetime.utcnow)
-    employer_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    # Convert datetime to string for SQLite compatibility
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+class Job(JobBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    employer_id: int = Field(foreign_key="user.id")
     
-    # Relationships with cascade
+    # Relationships
+    employer: "User" = Relationship(back_populates="posted_jobs")
     applications: List["Application"] = Relationship(
         back_populates="job",
-        sa_relationship_kwargs={
-            "cascade": "all, delete-orphan",
-            "lazy": "joined"
-        }
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
-    employer: "User" = Relationship(
-        back_populates="posted_jobs",
-        sa_relationship_kwargs={"lazy": "joined"}
-    )
+    
+    # Set default values for timestamps in a way SQLite can handle
+    created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    updated_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())

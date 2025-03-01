@@ -5,6 +5,8 @@ from src.models.user import User, UserRole
 from src.models.job import Job
 from src.database.session import get_db
 from src.security import get_current_user
+from src.dependencies.auth import get_current_employer, get_current_jobseeker
+from typing import List
 
 router = APIRouter()
 
@@ -62,4 +64,19 @@ def read_applications(
         query = query.join(Job).where(Job.employer_id == current_user.id)
     
     applications = session.exec(query.offset(skip).limit(limit)).all()
+    return applications
+
+@router.get("/job/{job_id}", response_model=List[Application])
+def get_job_applications(
+    job_id: int,
+    current_user: User = Depends(get_current_employer),
+    db: Session = Depends(get_db)
+):
+    # Check if job exists
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Get applications
+    applications = db.query(Application).filter(Application.job_id == job_id).all()
     return applications

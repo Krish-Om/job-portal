@@ -9,10 +9,17 @@ def check_roles(allowed_roles: List[UserRole]):
         if current_user.role not in allowed_roles:
             raise HTTPException(
                 status_code=403,
-                detail="Operation not permitted for this role"
+                detail="Only employers can create jobs"
             )
         return current_user
     return role_checker
 
-get_current_employer = check_roles([UserRole.EMPLOYER])
+def get_current_employer(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.EMPLOYER:
+        raise HTTPException(
+            status_code=403,
+            detail="Only employers can create jobs"
+        )
+    return current_user
+
 get_current_jobseeker = check_roles([UserRole.JOBSEEKER])

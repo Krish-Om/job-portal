@@ -25,8 +25,7 @@ def create_job(
 @router.get("/{job_id}", response_model=Job)
 def read_job(
     job_id: int,
-    session: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    session: Session = Depends(get_db)
 ):
     job = session.get(Job, job_id)
     if not job:
@@ -37,13 +36,9 @@ def read_job(
 def read_jobs(
     skip: int = 0,
     limit: int = 10,
-    session: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    session: Session = Depends(get_db)
 ):
-    query = select(Job)
-    if current_user.role == UserRole.EMPLOYER:
-        query = query.where(Job.employer_id == current_user.id)
-    jobs = session.exec(query.offset(skip).limit(limit)).unique().all()
+    jobs = session.exec(select(Job).offset(skip).limit(limit)).unique().all()
     return jobs
 
 @router.put("/{job_id}", response_model=Job)
@@ -60,9 +55,11 @@ def update_job(
     if db_job.employer_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to update this job")
     
-    for var, value in vars(job_update).items():
-        if value is not None:
-            setattr(db_job, var, value)
+    # Update job fields (skip id and employer_id)
+    job_data = job_update.dict(exclude={"id"})
+    for key, value in job_data.items():
+        if value is not None and key != "employer_id":
+            setattr(db_job, key, value)
     
     session.add(db_job)
     session.commit()
@@ -104,3 +101,29 @@ def apply_for_job(
     db.commit()
     db.refresh(application)
     return application
+
+@router.get("/{job_id}", response_model=Job)
+async def get_job(job_id: int, db: Session = Depends(get_db)):
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return job
+
+@router.post("/", response_model=Job)
+async def create_job(
+    job_data: Job,
+    current_user: User = Depends(get_current_employer),
+    db: Session = Depends(get_db)
+):
+    if current_user.role != UserRole.EMPLOYER:
+        raise HTTPException(
+            status_code=403,
+            detail="Only employers can create jobs"
+        )
+    
+    # Create job
+    job = Job(**job_data.dict(), employer_id=current_user.id)
+    db.add(job)
+    db.commit()
+    db.refresh(job)
+    return job

@@ -8,14 +8,34 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from src.database.session import get_db
 from src.utils.password import verify_password
+import pathlib
+from passlib.context import CryptContext
 
-# Load environment variables
-load_dotenv()
+# Load environment variables with explicit path
+BASE_DIR = pathlib.Path(__file__).parent.parent.parent
+ENV_PATH = BASE_DIR / ".env"
+load_dotenv(dotenv_path=ENV_PATH)
+
+# Print for debugging
+print(f"Loading .env from: {ENV_PATH}")
+print(f"SECRET_KEY: {os.getenv('SECRET_KEY')}")
+print(f"ALGORITHM: {os.getenv('ALGORITHM')}")
 
 # Constants from environment variables
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES", "30"))
+SECRET_KEY = os.getenv("SECRET_KEY", "KRISHOMBASUKALA")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def verify_password(plain_password, hashed_password):
+    """Verify a password against a hash."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    """Generate a password hash."""
+    return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create JWT access token."""
@@ -26,6 +46,11 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     to_encode.update({"exp": expire})
+    
+    # Use fallback if SECRET_KEY is not set
+    if not SECRET_KEY:
+        print("WARNING: Using fallback secret key. This is not secure for production!")
+        
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 

@@ -9,6 +9,7 @@ class UserRole(str, Enum):
     EMPLOYER = "employer"
 
 class UserBase(SQLModel):
+    id: Optional[int] = None
     username: str = Field(index=True, unique=True)
     email: EmailStr = Field(index=True, unique=True)
     role: UserRole
@@ -20,9 +21,14 @@ class UserBase(SQLModel):
             raise ValueError('Role must be either jobseeker or employer')
         return v
 
-class User(UserBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    password_hash: str = Field(nullable=False)
+class User(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    username: str = Field(index=True, unique=True)
+    email: EmailStr = Field(index=True, unique=True)
+    hashed_password: str
+    role: UserRole
+    is_active: bool = Field(default=True)
+    password: Optional[str] = None  # Only used for validation, not stored
 
     # Relationships with cascade
     applications: List["Application"] = Relationship(
@@ -49,7 +55,7 @@ class UserCreate(UserBase):
             email=self.email,
             role=self.role,
             is_active=self.is_active,
-            password_hash=get_password_hash(self.password)
+            hashed_password=get_password_hash(self.password)
         )
 
 class UserInDB(UserBase):
