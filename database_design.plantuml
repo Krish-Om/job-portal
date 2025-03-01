@@ -1,0 +1,49 @@
+@startuml
+!theme plain
+skinparam backgroundColor transparent
+skinparam linetype ortho
+
+entity "User" as user {
+  * id : integer <<PK>>
+  --
+  * username : varchar
+  * email : varchar
+  * password : varchar
+  * role : enum
+  * is_active : boolean
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "Job" as job {
+  * id : integer <<PK>>
+  --
+  * title : varchar
+  * description : text
+  * location : varchar
+  * category : varchar
+  * company : varchar
+  * employer_id : integer <<FK>>
+  * posted_date : timestamp
+  deadline : timestamp
+  is_active : boolean
+  updated_at : timestamp
+}
+
+entity "Application" as application {
+  * id : integer <<PK>>
+  --
+  * user_id : integer <<FK>>
+  * job_id : integer <<FK>>
+  * resume_path : varchar
+  * cover_letter : text
+  * applied_date : timestamp
+  * status : enum
+  updated_at : timestamp
+}
+
+user ||--o{ job : "creates"
+user ||--o{ application : "submits"
+job ||--o{ application : "receives"
+
+@enduml
