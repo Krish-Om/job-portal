@@ -50,7 +50,12 @@ function AuthProvider({ children }) {
       const response = await authAPI.register(userData);
       return response.data;
     } catch (err) {
-      setError(err.response?.data?.detail || 'Registration failed');
+      console.error('Registration error:', err);
+      setError(
+        err.response?.data?.detail || 
+        err.message || 
+        'Registration failed'
+      );
       throw err;
     }
   };
@@ -59,28 +64,29 @@ function AuthProvider({ children }) {
     try {
       setError(null);
       
-      // Make the login request using the updated authAPI.login
+      // send username/password to the server
       const response = await authAPI.login(credentials);
       
-      // Check if the response has the expected structure
+      // make sure we actually got a token back
       if (!response.data || !response.data.access_token) {
         throw new Error('Invalid response from server');
       }
       
-      // Store the token
+      // save the token so we stay logged in
       localStorage.setItem('token', response.data.access_token);
       
-      // Fetch user details
+      // now grab the user info
       try {
         const userResponse = await authAPI.getCurrentUser();
         setUser(userResponse.data);
         return userResponse.data;
       } catch (userErr) {
         console.error('Error fetching user after login:', userErr);
-        throw userErr;
+        throw userErr; // not sure if this is the best way to handle this ¯\_(ツ)_/¯
       }
     } catch (err) {
       console.error('Login error:', err);
+      // show something helpful to the user
       setError(
         err.response?.data?.detail || 
         err.message || 

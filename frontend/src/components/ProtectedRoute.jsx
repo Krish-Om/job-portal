@@ -5,21 +5,21 @@ export default function ProtectedRoute({ requireAuth = false, requireEmployer = 
   const { isAuthenticated, isEmployer, loading } = useAuth();
   const location = useLocation();
 
-  // Show loading state while checking authentication
+  // show a spinner while we check if they're logged in
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
-  // If authentication is required and user is not authenticated, redirect to login
+  // kick them to the login page if they're not logged in
   if (requireAuth && !isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
-  // If employer role is required and user is not an employer, redirect to home
+  // don't let jobseekers see employer stuff
   if (requireEmployer && !isEmployer) {
     return <Navigate to="/" replace />;
   }
 
-  // If all conditions are met, render the child routes
+  // if they passed all the checks, show the page
   return <Outlet />;
 } 

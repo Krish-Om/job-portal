@@ -13,13 +13,14 @@ router = APIRouter()
 @router.post("/", response_model=Job)
 def create_job(
     job: Job,
-    current_user: User = Depends(get_current_employer),
+    current_user: User = Depends(get_current_employer),  # only employers can make jobs!
     session: Session = Depends(get_db)
 ):
+    # set the employer id to whoever is logged in
     job.employer_id = current_user.id
     session.add(job)
     session.commit()
-    session.refresh(job)
+    session.refresh(job)  # gotta refresh to get the id back
     return job
 
 @router.get("/{job_id}", response_model=Job)

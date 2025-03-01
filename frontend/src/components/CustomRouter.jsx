@@ -1,15 +1,15 @@
 import { BrowserRouter } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-// This component helps suppress the React Router v6 future flag warnings
+// this fixes those annoying React Router warnings that kept spamming the console
 export default function CustomRouter({ children }) {
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
-    // This ensures we're only rendering on the client side
+    // wait until we're in the browser
     setIsClient(true);
     
-    // Add this to suppress the specific warnings
+    // super hacky way to hide those stupid warnings
     const originalConsoleWarn = console.warn;
     console.warn = (...args) => {
       if (

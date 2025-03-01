@@ -16,20 +16,20 @@ def create_application(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_db)
 ):
-    # Verify user is a jobseeker
+    # make sure they're a jobseeker - employers can't apply to jobs lol
     if current_user.role != UserRole.JOBSEEKER:
         raise HTTPException(status_code=403, detail="Only jobseekers can apply for jobs")
     
-    # Verify job exists
+    # check if the job actually exists
     job = session.get(Job, application.job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
-    # Set the applicant
+    # set the user id to whoever is logged in
     application.user_id = current_user.id
     session.add(application)
     session.commit()
-    session.refresh(application)
+    session.refresh(application)  # need this to get the id
     return application
 
 @router.get("/{application_id}", response_model=Application)

@@ -11,22 +11,22 @@ from src.utils.password import verify_password
 import pathlib
 from passlib.context import CryptContext
 
-# Load environment variables with explicit path
+# had to do this crazy path stuff cuz the env file wasn't loading right :/
 BASE_DIR = pathlib.Path(__file__).parent.parent.parent
 ENV_PATH = BASE_DIR / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
 
-# Print for debugging
+# these print statements saved my life when debugging
 print(f"Loading .env from: {ENV_PATH}")
 print(f"SECRET_KEY: {os.getenv('SECRET_KEY')}")
 print(f"ALGORITHM: {os.getenv('ALGORITHM')}")
 
-# Constants from environment variables
-SECRET_KEY = os.getenv("SECRET_KEY", "KRISHOMBASUKALA")
+# grab stuff from env file (with defaults just in case)
+SECRET_KEY = os.getenv("SECRET_KEY", "KRISHOMBASUKALA")  # super secret backup key lol
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
-# Password hashing
+# password hashing stuff - don't touch this, it works!!
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
