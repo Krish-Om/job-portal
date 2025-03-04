@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { mockAuthAPI, mockJobsAPI, mockApplicationsAPI } from './mockApi';
 
-// FIXME: remember to change this before we go live!!!
-const useMockApi = false; // Set to false to use the real API
+// Always use the real API
+const useMockApi = false;
 
 // setup axios to talk to our backend
 const api = axios.create({
@@ -37,19 +36,24 @@ api.interceptors.response.use(
 // Auth API
 const authAPI = {
   login: (credentials) => {
-    if (useMockApi) return mockAuthAPI.login(credentials);
-    return api.post('/auth/login', credentials);
+    // For login, we need to use form-urlencoded format instead of JSON
+    const formData = new URLSearchParams();
+    formData.append('username', credentials.username);
+    formData.append('password', credentials.password);
+    
+    return api.post('/auth/login', formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
   },
   register: (userData) => {
-    if (useMockApi) return mockAuthAPI.register(userData);
     return api.post('/auth/register', userData);
   },
   getCurrentUser: () => {
-    if (useMockApi) return mockAuthAPI.getCurrentUser();
     return api.get('/auth/me');
   },
   logout: () => {
-    if (useMockApi) return mockAuthAPI.logout();
     return api.post('/auth/logout');
   },
 };
@@ -57,43 +61,50 @@ const authAPI = {
 // Jobs API
 const jobsAPI = {
   getAllJobs: () => {
-    if (useMockApi) return mockJobsAPI.getAllJobs();
     return api.get('/jobs');
   },
   getJob: (id) => {
-    if (useMockApi) return mockJobsAPI.getJob(id);
     return api.get(`/jobs/${id}`);
   },
   createJob: (jobData) => {
-    if (useMockApi) return mockJobsAPI.createJob(jobData);
     return api.post('/jobs', jobData);
   },
   updateJob: (id, jobData) => {
-    if (useMockApi) return mockJobsAPI.updateJob(id, jobData);
     return api.put(`/jobs/${id}`, jobData);
   },
   deleteJob: (id) => {
-    if (useMockApi) return mockJobsAPI.deleteJob(id);
     return api.delete(`/jobs/${id}`);
+  },
+  searchJobs: (params = {}) => {
+    // Build query parameters from the params object
+    const queryParams = new URLSearchParams();
+    
+    // Add search parameters if they exist
+    if (params.query) queryParams.append('query', params.query);
+    if (params.location) queryParams.append('location', params.location);
+    if (params.category) queryParams.append('category', params.category);
+    
+    // Add pagination parameters if provided
+    if (params.skip) queryParams.append('skip', params.skip);
+    if (params.limit) queryParams.append('limit', params.limit);
+    
+    // Make the request with query parameters
+    return api.get(`/jobs/search/?${queryParams.toString()}`);
   },
 };
 
 // Applications API
 const applicationsAPI = {
   getUserApplications: () => {
-    if (useMockApi) return mockApplicationsAPI.getUserApplications();
     return api.get('/applications');
   },
   getApplication: (id) => {
-    if (useMockApi) return mockApplicationsAPI.getApplication(id);
     return api.get(`/applications/${id}`);
   },
   submitApplication: (applicationData) => {
-    if (useMockApi) return mockApplicationsAPI.submitApplication(applicationData);
     return api.post('/applications', applicationData);
   },
   getJobApplications: (jobId) => {
-    if (useMockApi) return mockApplicationsAPI.getJobApplications(jobId);
     return api.get(`/applications/job/${jobId}`);
   },
 };

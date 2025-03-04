@@ -23,7 +23,7 @@ export default function JobDetail() {
   useEffect(() => {
     const fetchJobDetail = async () => {
       try {
-        const response = await jobsAPI.getJobById(id);
+        const response = await jobsAPI.getJob(id);
         setJob(response.data);
       } catch (err) {
         setError('Failed to fetch job details. Please try again later.');

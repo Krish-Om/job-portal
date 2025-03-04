@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import Session, select, or_
 from src.models.job import Job
 from src.models.application import Application
 from src.models.user import User, UserRole
@@ -36,7 +36,7 @@ def read_job(
 @router.get("/", response_model=List[Job])
 def read_jobs(
     skip: int = 0,
-    limit: int = 10,
+    limit: int = 100,  # Increased limit to show more jobs
     session: Session = Depends(get_db)
 ):
     jobs = session.exec(select(Job).offset(skip).limit(limit)).unique().all()
@@ -103,28 +103,38 @@ def apply_for_job(
     db.refresh(application)
     return application
 
-@router.get("/{job_id}", response_model=Job)
-async def get_job(job_id: int, db: Session = Depends(get_db)):
-    job = db.query(Job).filter(Job.id == job_id).first()
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-    return job
-
-@router.post("/", response_model=Job)
-async def create_job(
-    job_data: Job,
-    current_user: User = Depends(get_current_employer),
-    db: Session = Depends(get_db)
+@router.get("/search/", response_model=List[Job])
+def search_jobs(
+    query: Optional[str] = None,
+    location: Optional[str] = None,
+    category: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 100,
+    session: Session = Depends(get_db)
 ):
-    if current_user.role != UserRole.EMPLOYER:
-        raise HTTPException(
-            status_code=403,
-            detail="Only employers can create jobs"
+    statement = select(Job)
+    
+    # Apply text search filters if provided
+    if query:
+        statement = statement.where(
+            or_(
+                Job.title.ilike(f"%{query}%"),
+                Job.description.ilike(f"%{query}%"),
+                Job.company.ilike(f"%{query}%")
+            )
         )
     
-    # Create job
-    job = Job(**job_data.dict(), employer_id=current_user.id)
-    db.add(job)
-    db.commit()
-    db.refresh(job)
-    return job
+    # Apply location filter if provided
+    if location:
+        statement = statement.where(Job.location.ilike(f"%{location}%"))
+    
+    # Apply category filter if provided
+    if category:
+        statement = statement.where(Job.category.ilike(f"%{category}%"))
+    
+    # Apply pagination
+    statement = statement.offset(skip).limit(limit)
+    
+    # Execute the query
+    jobs = session.exec(statement).unique().all()
+    return jobs
