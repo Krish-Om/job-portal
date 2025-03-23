@@ -10,26 +10,30 @@ from typing import List
 
 router = APIRouter()
 
-@router.post("/", response_model=Application)
-def create_application(
-    application: Application, 
+@router.post("/", response_model=ApplicationResponse)
+async def create_application(
+    job_id: int,
+    resume_path: str,  # Get this from the upload endpoint
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_db)
+    db: Session = Depends(get_db)
 ):
-    # make sure they're a jobseeker - employers can't apply to jobs lol
-    if current_user.role != UserRole.JOBSEEKER:
-        raise HTTPException(status_code=403, detail="Only jobseekers can apply for jobs")
-    
-    # check if the job actually exists
-    job = session.get(Job, application.job_id)
+    # Check if job exists
+    job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
-    # set the user id to whoever is logged in
-    application.user_id = current_user.id
-    session.add(application)
-    session.commit()
-    session.refresh(application)  # need this to get the id
+    # Create application
+    application = Application(
+        job_id=job_id,
+        user_id=current_user.id,
+        resume_path=resume_path,  # Store the Supabase path
+        status="pending"
+    )
+    
+    db.add(application)
+    db.commit()
+    db.refresh(application)
+    
     return application
 
 @router.get("/{application_id}", response_model=Application)

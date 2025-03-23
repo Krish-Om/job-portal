@@ -10,7 +10,7 @@ class Application(SQLModel, table=True):
     job_id: int = Field(foreign_key="job.id")
     applied_date: datetime = Field(default=datetime.now(timezone.utc))
     status: str = Field(default="pending")
-    
+    resume_path = Column(String(255),nullable=True)
 
     # Relationships
     job: "Job" = Relationship(back_populates="applications")
