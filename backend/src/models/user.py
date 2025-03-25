@@ -32,7 +32,7 @@ class User(SQLModel, table=True):
 
     # Relationships with cascade
     applications: List["Application"] = Relationship(
-        back_populates="applicant",
+        back_populates="user",  # Changed from "applicant" to "user"
         sa_relationship_kwargs={
             "cascade": "all, delete-orphan",
             "lazy": "joined"

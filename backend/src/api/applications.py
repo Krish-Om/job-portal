@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from src.models.application import Application
+from src.models.application import Application,ApplicationResponse
 from src.models.user import User, UserRole
 from src.models.job import Job
 from src.database.session import get_db
