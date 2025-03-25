@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { jobsAPI, applicationsAPI } from '../lib/api';
+import { jobsAPI, applicationsAPI, filesAPI } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -15,10 +15,12 @@ export default function JobDetail() {
   const [error, setError] = useState('');
   const [applying, setApplying] = useState(false);
   const [applicationData, setApplicationData] = useState({
-    resume_path: '',
     cover_letter: '',
   });
   const [applicationSuccess, setApplicationSuccess] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileError, setFileError] = useState('');
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   useEffect(() => {
     const fetchJobDetail = async () => {
@@ -49,18 +51,62 @@ export default function JobDetail() {
     setApplicationData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFileError('');
+
+    if (!file) {
+      setSelectedFile(null);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setFileError('File size exceeds the 5MB limit');
+      setSelectedFile(null);
+      e.target.value = null;
+      return;
+    }
+
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setFileError('Only PDF and Word documents are allowed');
+      setSelectedFile(null);
+      e.target.value = null;
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
+    setUploadingFile(true);
+
     try {
-      await applicationsAPI.submitApplication({
-        job_id: Number.parseInt(id, 10),
-        ...applicationData,
-      });
+      // 1. First upload the file
+      const fileUploadResponse = await filesAPI.uploadFile(selectedFile);
+      const filePath = fileUploadResponse.data.file_path;
+
+      // 2. Then submit the application with the file path
+      const formData = new FormData();
+      formData.append('job_id', Number.parseInt(id, 10));
+      formData.append('cover_letter', applicationData.cover_letter);
+      formData.append('resume_path', filePath);
+
+      await applicationsAPI.submitApplication(formData);
+
       setApplicationSuccess(true);
       setApplying(false);
-    } catch (err) {
+    } catch (error) {
+      console.error('Error submitting application:', error);
       setError('Failed to submit application. Please try again.');
-      console.error(err);
+    } finally {
+      setUploadingFile(false);
     }
   };
 
@@ -122,18 +168,25 @@ export default function JobDetail() {
           {applying && (
             <form onSubmit={handleSubmitApplication} className="w-full space-y-4">
               <div className="space-y-2">
-                <label htmlFor="resume_path" className="text-sm font-medium">
-                  Resume Link
+                <label htmlFor="resume" className="text-sm font-medium">
+                  Resume/CV (Max 5MB)
                 </label>
                 <Input
-                  id="resume_path"
-                  name="resume_path"
-                  type="text"
-                  placeholder="Link to your resume (Google Drive, Dropbox, etc.)"
-                  value={applicationData.resume_path}
-                  onChange={handleInputChange}
+                  id="resume"
+                  name="resume"
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
                   required
                 />
+                {fileError && (
+                  <p className="text-sm text-red-500">{fileError}</p>
+                )}
+                {selectedFile && (
+                  <p className="text-sm text-green-600">
+                    Selected file: {selectedFile.name}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <label htmlFor="cover_letter" className="text-sm font-medium">
@@ -151,7 +204,9 @@ export default function JobDetail() {
                 />
               </div>
               <div className="flex space-x-2">
-                <Button type="submit">Submit Application</Button>
+                <Button type="submit" disabled={uploadingFile}>
+                  {uploadingFile ? 'Uploading...' : 'Submit Application'}
+                </Button>
                 <Button
                   type="button"
                   variant="outline"
@@ -166,4 +221,4 @@ export default function JobDetail() {
       </Card>
     </div>
   );
-} 
+}

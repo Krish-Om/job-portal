@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { applicationsAPI } from '../lib/api';
+import { applicationsAPI, filesAPI } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -68,6 +68,20 @@ export default function Applications() {
     setRetryCount(prev => prev + 1);
   };
 
+  const handleViewResume = async (resumePath) => {
+    try {
+      const response = await filesAPI.getFileUrl(resumePath);
+      if (response.data && response.data.download_url) {
+        window.open(response.data.download_url, '_blank');
+      }
+    } catch (err) {
+      console.error('Error accessing resume:', err);
+      setError('Unable to access resume file');
+    }
+  };
+
+ 
+
   return (
     <div className="max-w-7xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">My Applications</h1>
@@ -132,6 +146,18 @@ export default function Applications() {
                     </p>
                   </div>
                 )}
+                {application.resume_path && (
+                  <div className="mt-3">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleViewResume(application.resume_path)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      View Resume
+                    </Button>
+                  </div>
+                )}
               </CardContent>
               <CardFooter>
                 <Link to={`/jobs/${application.job_id}`} className="w-full">
@@ -146,4 +172,4 @@ export default function Applications() {
       )}
     </div>
   );
-} 
+}

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, Body
 from sqlmodel import Session, select
 from src.models.application import Application,ApplicationResponse
 from src.models.user import User, UserRole
@@ -12,8 +12,9 @@ router = APIRouter()
 
 @router.post("/", response_model=ApplicationResponse)
 async def create_application(
-    job_id: int,
-    resume_path: str,  # Get this from the upload endpoint
+    job_id: int = Form(...),
+    cover_letter: str = Form(""),
+    resume_path: str = Form(...),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):

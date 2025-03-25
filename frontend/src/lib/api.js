@@ -109,4 +109,22 @@ const applicationsAPI = {
   },
 };
 
-export { api, authAPI, jobsAPI, applicationsAPI }; 
+// Files API
+const filesAPI = {
+  uploadFile: (file) => {
+    // Create a FormData object to send the file
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return api.post('/files/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  getFileUrl: (filePath) => {
+    return api.get(`/api/files/download/${encodeURIComponent(filePath)}`);
+  }
+};
+
+export { authAPI, jobsAPI, applicationsAPI, filesAPI };
