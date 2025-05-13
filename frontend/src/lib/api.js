@@ -102,7 +102,11 @@ const applicationsAPI = {
     return api.get(`/applications/${id}`);
   },
   submitApplication: (applicationData) => {
-    return api.post('/applications', applicationData);
+    return api.post('/applications', applicationData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   getJobApplications: (jobId) => {
     return api.get(`/applications/job/${jobId}`);

@@ -15,6 +15,7 @@ import Jobs from './pages/Jobs';
 import JobDetail from './pages/JobDetail';
 import Applications from './pages/Applications';
 import EmployerDashboard from './pages/EmployerDashboard';
+import EmployerApplications from './pages/EmployerApplications';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ function App() {
               
               <Route element={<ProtectedRoute requireAuth={true} requireEmployer={true} />}>
                 <Route path="/dashboard" element={<EmployerDashboard />} />
+                <Route path="/applications/:jobId" element={<EmployerApplications />} />
               </Route>
 
               {/* Add this route inside your Routes component */}

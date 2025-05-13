@@ -4,6 +4,7 @@ import { applicationsAPI, filesAPI } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/badge';
 
 export default function Applications() {
   const { user } = useAuth();
@@ -62,7 +63,7 @@ export default function Applications() {
     }, 5000); // Retry every 5 seconds
     
     return () => clearTimeout(retryTimer);
-  }, [user, retryCount]);
+  }, [user, retryCount, applications.length, error]);
 
   const handleRetry = () => {
     setRetryCount(prev => prev + 1);
@@ -72,7 +73,7 @@ export default function Applications() {
     try {
       const response = await filesAPI.getFileUrl(resumePath);
       if (response.data && response.data.download_url) {
-        window.open(response.data.download_url, '_blank');
+        window.open(response.data?.download_url, '_blank');
       }
     } catch (err) {
       console.error('Error accessing resume:', err);
@@ -99,7 +100,7 @@ export default function Applications() {
         <div className="flex justify-center items-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-lg">Loading your applications...</p>
+            <p className="text-lg">Loading your applications..</p>
           </div>
         </div>
       ) : applications.length === 0 && !error ? (
@@ -124,19 +125,19 @@ export default function Applications() {
               <CardContent>
                 <p className="text-sm mb-2">
                   <span className="font-medium">Status:</span>{' '}
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
+                  <Badge
+                    variant={
                       application.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-800'
+                        ? 'warning'
                         : application.status === 'accepted'
-                        ? 'bg-green-100 text-green-800'
+                        ? 'success'
                         : application.status === 'rejected'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
+                        ? 'destructive'
+                        : 'secondary'
+                    }
                   >
                     {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
-                  </span>
+                  </Badge>
                 </p>
                 {application.cover_letter && (
                   <div className="mt-2">

@@ -68,9 +68,7 @@ export default function JobDetail() {
     }
 
     const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/pdf'
     ];
 
     if (!allowedTypes.includes(file.type)) {
