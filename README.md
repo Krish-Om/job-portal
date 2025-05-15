@@ -142,20 +142,6 @@ job-portal/
 
 Once the backend server is running, you can access the API documentation at `http://localhost:8000/docs` or `http://localhost:8000/redoc`.
 
-## Testing the Application
-
-You can use the following sample accounts for testing:
-
-### Employer Accounts
-- Username: `techinnovations`, Password: `Pass1234!`
-- Username: `globalmarketing`, Password: `Pass1234!`
-- Username: `healthpartners`, Password: `Pass1234!`
-
-### Job Seeker Accounts
-- Username: `johndeveloper`, Password: `Pass1234!`
-- Username: `sarahdesigner`, Password: `Pass1234!`
-- Username: `michaelanalyst`, Password: `Pass1234!`
-
 ## Deployment
 
 This application is configured for deployment on PaaS platforms like Render, Railway, or Heroku:
