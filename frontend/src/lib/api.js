@@ -40,39 +40,39 @@ const authAPI = {
     formData.append('username', credentials.username);
     formData.append('password', credentials.password);
     
-    return api.post('/auth/login', formData, {
+    return api.post('api/auth/login', formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
   },
   register: (userData) => {
-    return api.post('/auth/register', userData);
+    return api.post('api/auth/register', userData);
   },
   getCurrentUser: () => {
-    return api.get('/auth/me');
+    return api.get('api/auth/me');
   },
   logout: () => {
-    return api.post('/auth/logout');
+    return api.post('api//auth/logout');
   },
 };
 
 // Jobs API
 const jobsAPI = {
   getAllJobs: () => {
-    return api.get('/jobs');
+    return api.get('api/jobs');
   },
   getJob: (id) => {
-    return api.get(`/jobs/${id}`);
+    return api.get(`api/jobs/${id}`);
   },
   createJob: (jobData) => {
-    return api.post('/jobs', jobData);
+    return api.post('api/jobs', jobData);
   },
   updateJob: (id, jobData) => {
-    return api.put(`/jobs/${id}`, jobData);
+    return api.put(`api/jobs/${id}`, jobData);
   },
   deleteJob: (id) => {
-    return api.delete(`/jobs/${id}`);
+    return api.delete(`api/jobs/${id}`);
   },
   searchJobs: (params = {}) => {
     // Build query parameters from the params object
@@ -88,30 +88,30 @@ const jobsAPI = {
     if (params.limit) queryParams.append('limit', params.limit);
     
     // Make the request with query parameters
-    return api.get(`/jobs/search/?${queryParams.toString()}`);
+    return api.get(`api/jobs/search/?${queryParams.toString()}`);
   },
 };
 
 // Applications API
 const applicationsAPI = {
   getUserApplications: () => {
-    return api.get('/applications');
+    return api.get('api/applications');
   },
   getApplication: (id) => {
-    return api.get(`/applications/${id}`);
+    return api.get(`api/applications/${id}`);
   },
   submitApplication: (applicationData) => {
-    return api.post('/applications', applicationData, {
+    return api.post('api/applications', applicationData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
   },
   getJobApplications: (jobId) => {
-    return api.get(`/applications/job/${jobId}`);
+    return api.get(`api/applications/job/${jobId}`);
   },
   updateStatus: (applicationId, status) => {
-    return api.put(`/applications/${applicationId}/status`, { status });
+    return api.put(`api/applications/${applicationId}/status`, { status });
   },
 };
 
@@ -122,7 +122,7 @@ const filesAPI = {
     const formData = new FormData();
     formData.append('file', file);
     
-    return api.post('/files/upload', formData, {
+    return api.post('api/files/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -131,7 +131,7 @@ const filesAPI = {
   getFileUrl: (filePath) => {
     // Make sure filePath is properly encoded
     const encodedPath = encodeURIComponent(filePath);
-    return api.get(`/files/download/${encodedPath}`);
+    return api.get(`api/files/download/${encodedPath}`);
   }
 };
 
