@@ -1,14 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlalchemy.orm import Session
 from src.database.session import get_db
 from src.models.user import User
 from src.security import get_current_user
-from typing import Optional
 from supabase import create_client
 import os
 import uuid
 from datetime import datetime
-import json
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -24,32 +22,36 @@ supabase = create_client(
     supabase_key,
 )
 
+
 class FileUploadResponse(BaseModel):
     status: str
     filename: str
     file_path: str
     url: str
 
-@router.post("/upload", response_model=FileUploadResponse, status_code=status.HTTP_201_CREATED)
+
+@router.post(
+    "/upload", response_model=FileUploadResponse, status_code=status.HTTP_201_CREATED
+)
 async def upload_file(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Upload a resume file to Supabase Storage"""
     if not file or not file.filename:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"msg": "No file provided", "loc": ["body", "file"]}
+            detail={"msg": "No file provided", "loc": ["body", "file"]},
         )
 
     try:
-        # Check file size (5MB max)
         contents = await file.read()
         if len(contents) > 5 * 1024 * 1024:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail={"msg": "File size exceeds 5MB limit", "loc": ["body", "file"]}
+                detail={"msg": "File size exceeds 5MB limit",
+                        "loc": ["body", "file"]},
             )
 
         # Validate file type
@@ -57,7 +59,8 @@ async def upload_file(
         if content_type != "application/pdf":
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail={"msg": "Only PDF files are allowed", "loc": ["body", "file"]}
+                detail={"msg": "Only PDF files are allowed",
+                        "loc": ["body", "file"]},
             )
 
         # Generate unique filename
@@ -69,23 +72,20 @@ async def upload_file(
         response = supabase.storage.from_(bucket_name).upload(
             path=file_path,
             file=contents,
-            file_options={"content-type": "application/pdf"}
+            file_options={"content-type": "application/pdf"},
         )
 
         if not response:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Upload failed - no response from storage"
+                detail="Upload failed - no response from storage",
             )
 
         # Get file URL
         url = supabase.storage.from_(bucket_name).get_public_url(file_path)
 
         return FileUploadResponse(
-            status="success",
-            filename=file.filename,
-            file_path=file_path,
-            url=url
+            status="success", filename=file.filename, file_path=file_path, url=url
         )
 
     except HTTPException:
@@ -93,25 +93,22 @@ async def upload_file(
     except Exception as e:
         print(f"Upload error: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )
+
 
 @router.get("/download/{file_path:path}")
 async def get_download_url(
-    file_path: str,
-    current_user: User = Depends(get_current_user)
+    file_path: str, current_user: User = Depends(get_current_user)
 ):
     """Generate a download URL for a file"""
     try:
         url = supabase.storage.from_(bucket_name).create_signed_url(
             path=file_path,
-            expires_in=3600  # 1 hour
+            expires_in=3600,  # 1 hour
         )
         return {"download_url": url["signedURL"] if "signedURL" in url else None}
     except Exception as e:
         print(f"Error generating URL: {e}")
         raise HTTPException(
-            status_code=404,
-            detail="File not found or access denied"
-        )
+            status_code=404, detail="File not found or access denied")

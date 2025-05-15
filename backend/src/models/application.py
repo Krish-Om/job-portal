@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field, Relationship, String
-from sqlalchemy import Column, DateTime  # Add this import
+from sqlalchemy import Column, DateTime  
 from datetime import datetime
 from typing import Optional
 from .job import Job
