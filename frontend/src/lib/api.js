@@ -53,7 +53,7 @@ const authAPI = {
     return api.get('api/auth/me');
   },
   logout: () => {
-    return api.post('api//auth/logout');
+    return api.post('api/auth/logout');
   },
 };
 
