@@ -20,9 +20,6 @@ import EmployerApplications from './pages/EmployerApplications';
 // Create a client
 const queryClient = new QueryClient();
 
-// Add this import
-import ApiDebug from './components/ApiDebug';
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,8 +43,8 @@ function App() {
                 <Route path="/applications/:jobId" element={<EmployerApplications />} />
               </Route>
 
-              {/* Add this route inside your Routes component */}
-              <Route path="/debug" element={<ApiDebug />} />
+              {/* Add this route inside your Routes component
+              <Route path="/debug" element={<ApiDebug />} /> */}
             </Route>
           </Routes>
         </AuthProvider>
