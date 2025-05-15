@@ -12,6 +12,7 @@ class Application(SQLModel, table=True):
     job_id: int = Field(foreign_key="job.id", index=True)  # Make sure this matches your job table name
     user_id: int = Field(foreign_key="user.id", index=True)  # Make sure this matches your user table name
     resume_path: str = Field(max_length=255)
+    cover_letter: Optional[str] = Field(default="")
     status: str = Field(default="pending")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(
@@ -29,9 +30,13 @@ class ApplicationResponse(SQLModel):
     job_id: int
     user_id: int
     resume_path: str
+    cover_letter: Optional[str] = ""
     status: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    # Include applicant details for the UI
+    applicant_name: Optional[str] = None
+    applicant_email: Optional[str] = None
     
     class Config:
         orm_mode = True  # Allows response model to read from ORM model instances

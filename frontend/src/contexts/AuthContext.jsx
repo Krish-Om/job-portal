@@ -34,7 +34,7 @@ function AuthProvider({ children }) {
           const response = await authAPI.getCurrentUser();
           setUser(response.data);
         } catch (err) {
-          console.error('Failed to fetch user:', err);
+          // If token is invalid or expired, remove it
           localStorage.removeItem('token');
         }
       }
@@ -50,7 +50,6 @@ function AuthProvider({ children }) {
       const response = await authAPI.register(userData);
       return response.data;
     } catch (err) {
-      console.error('Registration error:', err);
       setError(
         err.response?.data?.detail || 
         err.message || 
@@ -81,11 +80,9 @@ function AuthProvider({ children }) {
         setUser(userResponse.data);
         return userResponse.data;
       } catch (userErr) {
-        console.error('Error fetching user after login:', userErr);
-        throw userErr; // not sure if this is the best way to handle this ¯\_(ツ)_/¯
+        throw userErr;
       }
     } catch (err) {
-      console.error('Login error:', err);
       // show something helpful to the user
       setError(
         err.response?.data?.detail || 
@@ -100,7 +97,7 @@ function AuthProvider({ children }) {
     try {
       await authAPI.logout();
     } catch (err) {
-      console.error('Logout error:', err);
+      // Continue with logout process regardless of error
     } finally {
       localStorage.removeItem('token');
       setUser(null);

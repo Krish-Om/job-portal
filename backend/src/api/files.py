@@ -91,7 +91,6 @@ async def upload_file(
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Upload error: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )
@@ -109,6 +108,5 @@ async def get_download_url(
         )
         return {"download_url": url["signedURL"] if "signedURL" in url else None}
     except Exception as e:
-        print(f"Error generating URL: {e}")
         raise HTTPException(
             status_code=404, detail="File not found or access denied")

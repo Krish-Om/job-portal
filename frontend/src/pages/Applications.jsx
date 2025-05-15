@@ -119,7 +119,7 @@ export default function Applications() {
                   {application.job_title || 'Job Application'}
                 </CardTitle>
                 <p className="text-sm text-gray-500">
-                  Applied on: {new Date(application.applied_date).toLocaleDateString()}
+                  Applied on: {new Date(application.created_at).toLocaleDateString()}
                 </p>
               </CardHeader>
               <CardContent>

@@ -1,6 +1,5 @@
 from sqlmodel import SQLModel
 from src.database.session import engine
-from src.models import User, Job, Application
 
 def reset_db():
     """Reset database by dropping and recreating all tables"""

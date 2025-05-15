@@ -38,7 +38,6 @@ export default function EmployerApplications() {
       setApplications(response.data);
       setError('');
     } catch (err) {
-      console.error('Error fetching applications:', err);
       setError(err.response?.data?.detail || 'Failed to fetch applications');
     } finally {
       setLoading(false);
@@ -51,18 +50,31 @@ export default function EmployerApplications() {
       // Refresh applications list
       await fetchApplications();
     } catch (err) {
-      console.error('Error updating application status:', err);
       setError(err.response?.data?.detail || 'Failed to update status');
     }
   };
 
   const downloadResume = async (resumePath) => {
+    if (!resumePath) {
+      setError('No resume path provided');
+      return;
+    }
+    
     try {
       const response = await filesAPI.getFileUrl(resumePath);
-      window.open(response.data.url, '_blank');
+      
+      // Check for download_url or url in response
+      if (response.data?.download_url) {
+        window.open(response.data.download_url, '_blank');
+      } else if (response.data?.url) {
+        window.open(response.data.url, '_blank');
+      } else if (response.data?.signedURL) {
+        window.open(response.data.signedURL, '_blank');
+      } else {
+        setError('Failed to get resume download link');
+      }
     } catch (err) {
-      console.error('Error downloading resume:', err);
-      setError('Failed to download resume');
+      setError(`Failed to download resume: ${err.response?.data?.detail || err.message || 'Unknown error'}`);
     }
   };
 
@@ -161,8 +173,8 @@ export default function EmployerApplications() {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle>{application.applicant_name}</CardTitle>
-                    <CardDescription>{application.applicant_email}</CardDescription>
+                    <CardTitle>{application.applicant_name || 'Unknown Applicant'}</CardTitle>
+                    <CardDescription>{application.applicant_email || 'No email provided'}</CardDescription>
                   </div>
                   <Badge className={getStatusBadgeColor(application.status)}>
                     {application.status}
@@ -183,7 +195,7 @@ export default function EmployerApplications() {
                   className="w-full"
                   onClick={() => downloadResume(application.resume_path)}
                 >
-                  Download Resume
+                  View Resume
                 </Button>
                 {application.status === 'pending' && (
                   <div className="flex gap-2 w-full">
