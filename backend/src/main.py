@@ -29,7 +29,7 @@ app.add_middleware(
     allow_methods=["*"],  # probably should limit this but whatever
     allow_headers=["*"]   # this too but it works for now
 )
-@app.
+@app.on_event("startup")
 async def on_startup():
     init_db()
 
