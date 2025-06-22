@@ -6,3 +6,5 @@ passlib
 python-jose
 passlib[bcrypt]
 pyjwt
+requests
+python-dotenv
