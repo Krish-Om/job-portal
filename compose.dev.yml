@@ -1,0 +1,27 @@
+# Development overrides for Docker Compose
+# Use with: docker-compose -f compose.yml -f compose.dev.yml up
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile
+      target: development # if you add multi-stage build later
+    volumes:
+      - ./backend:/app/backend
+      - /app/backend/__pycache__
+    environment:
+      - PYTHON_ENV=development
+      - FASTAPI_RELOAD=true
+    command: [ "fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:8000

@@ -1,7 +1,130 @@
-services:
- backend:
-  depends_on:
-    - db
-  build:
-    context: ./backend
+version: '3.8'
 
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: job-portal-db
+    environment:
+      POSTGRES_DB: job_portal
+      POSTGRES_USER: job_portal_user
+      POSTGRES_PASSWORD: job_portal_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U job_portal_user -d job_portal" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - job-portal-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: job-portal-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://job_portal_user:job_portal_password@db:5432/job_portal
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - FRONTEND_URL=http://localhost:5173
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - /app/backend/__pycache__
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - job-portal-network
+    restart: unless-stopped
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: job-portal-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_APP_TITLE=Job Portal
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/frontend/src
+      - ./frontend/public:/app/frontend/public
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:5173/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - job-portal-network
+    restart: unless-stopped
+
+  # Development Frontend (alternative)
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: job-portal-frontend-dev
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_APP_TITLE=Job Portal
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    networks:
+      - job-portal-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # pgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: job-portal-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@jobportal.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - job-portal-network
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  job-portal-network:
+    driver: bridge
