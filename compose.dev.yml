@@ -1,22 +1,18 @@
 # Development overrides for Docker Compose
-# Use with: docker-compose -f compose.yml -f compose.dev.yml up
-
-version: '3.8'
+# Use with: docker compose -f compose.yml -f compose.dev.yml up
 
 services:
   backend:
-    build:
-      dockerfile: Dockerfile
-      target: development # if you add multi-stage build later
+    environment:
+      - DEBUG=true
+      - PYTHON_ENV=development
+      - FASTAPI_RELOAD=true
     volumes:
       - ./backend:/app/backend
       - /app/backend/__pycache__
-    environment:
-      - PYTHON_ENV=development
-      - FASTAPI_RELOAD=true
-    command: [ "fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
+    command: [ "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
 
-  frontend:
+  frontend-dev:
     build:
       dockerfile: Dockerfile.dev
     volumes:

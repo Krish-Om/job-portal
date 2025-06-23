@@ -8,3 +8,5 @@ passlib[bcrypt]
 pyjwt
 requests
 python-dotenv
+boto3>=1.28.0
+python-multipart

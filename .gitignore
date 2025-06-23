@@ -1,3 +1,4 @@
+STORAGE_INTEGRATION.md
 # Django specific
 *.log
 *.pot
@@ -8,7 +9,7 @@ media/
 *.sql
 linkedinpost.txt
 # Environments
-.env
+.env*
 .env.production
 .venv/
 env/

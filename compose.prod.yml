@@ -1,0 +1,68 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: job-portal-postgres-prod
+    env_file:
+      - ./backend/.env.production
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - job-portal-network-prod
+    restart: unless-stopped
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: job-portal-backend-prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env.production
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - job-portal-network-prod
+    restart: always
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: job-portal-frontend-prod
+    depends_on:
+      backend:
+        condition: service_healthy
+    env_file:
+      - ./frontend/.env.production
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - job-portal-network-prod
+    restart: always
+
+volumes:
+  postgres_data_prod:
+    driver: local
+
+networks:
+  job-portal-network-prod:
+    driver: bridge
