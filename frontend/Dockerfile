@@ -31,8 +31,8 @@ WORKDIR /app/frontend
 # Copy package files for production dependencies
 COPY package.json bun.lockb* ./
 
-# Install only production dependencies
-RUN bun install --frozen-lockfile --production
+# Install all dependencies (vite is needed for preview command)
+RUN bun install --frozen-lockfile
 
 # Copy built application from builder stage
 COPY --from=builder /app/frontend/dist ./dist
