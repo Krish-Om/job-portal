@@ -1,0 +1,25 @@
+[project]
+name = "job-portal-backend"
+version = "0.1.0"
+description = "Job Portal Backend API"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]",
+    "supabase",
+    "sqlmodel",
+    "psycopg2",
+    "passlib[bcrypt]",
+    "python-jose",
+    "pyjwt",
+    "requests",
+    "python-dotenv",
+    "boto3>=1.28.0",
+    "python-multipart",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = []

@@ -1,10 +1,11 @@
-# Use Python 3.13 slim image for smaller size
-FROM python:3.13-slim
+# Use uv image with Python 3.13
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app/backend
+    PYTHONPATH=/app/backend \
+    UV_SYSTEM_PYTHON=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -18,10 +19,12 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 # Set work directory
 WORKDIR /app/backend
 
-# Copy and install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Copy dependency files
+COPY pyproject.toml .
+COPY requirements.txt* ./
+
+# Install Python dependencies using uv
+RUN uv pip install --no-cache -r pyproject.toml
 
 # Copy application code
 COPY . .
