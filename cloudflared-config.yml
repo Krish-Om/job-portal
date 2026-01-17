@@ -1,0 +1,34 @@
+# Cloudflare Tunnel Configuration for Job Portal
+# This file should be placed at: ~/.cloudflared/config.yml on your Ubuntu Server
+
+tunnel: YOUR_TUNNEL_ID_HERE
+credentials-file: /home/YOUR_USERNAME/.cloudflared/YOUR_TUNNEL_ID.json
+
+# Ingress rules - routes traffic from your domain to local services
+ingress:
+  # Route API subdomain to backend on port 5000
+  - hostname: api.krishombasukala.com.np
+    service: http://localhost:5000
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      
+  # Route main domain to frontend on port 3000
+  - hostname: krishombasukala.com.np
+    service: http://localhost:3000
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      
+  # Route www subdomain to frontend as well
+  - hostname: www.krishombasukala.com.np
+    service: http://localhost:3000
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+
+  # Catch-all rule (required) - returns 404 for unmatched requests
+  - service: http_status:404
+
+# Optional: Enable metrics for monitoring
+metrics: localhost:9090
