@@ -17,6 +17,7 @@ export default defineConfig({
   preview: {
     host: '0.0.0.0',
     port: 5173,
+    allowedHosts: ['krishombasukala.com.np', 'www.krishombasukala.com.np', 'localhost'],
   },
   test: {
     globals: true,

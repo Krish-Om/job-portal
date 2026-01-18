@@ -1,8 +1,8 @@
 # Cloudflare Tunnel Configuration for Job Portal
 # This file should be placed at: ~/.cloudflared/config.yml on your Ubuntu Server
 
-tunnel: YOUR_TUNNEL_ID_HERE
-credentials-file: /home/YOUR_USERNAME/.cloudflared/YOUR_TUNNEL_ID.json
+tunnel: 695565de-7e59-4f82-bdaf-936231797372
+credentials-file: /home/krishom/.cloudflared/695565de-7e59-4f82-bdaf-936231797372.json
 
 # Ingress rules - routes traffic from your domain to local services
 ingress:
