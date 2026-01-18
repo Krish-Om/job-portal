@@ -16,7 +16,6 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 # Import SQLModel and your models
 from src.models import SQLModel
-from src.database.session import engine
 from src.models.user import User
 from src.models.job import Job
 from src.models.application import Application
@@ -34,6 +33,7 @@ if config.config_file_name is not None:
 # Set SQLModel metadata for autogenerate support
 target_metadata = SQLModel.metadata
 
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
     url = config.get_main_option("sqlalchemy.url")
@@ -47,10 +47,10 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
     configuration = config.get_section(config.config_ini_section)
-    configuration["sqlalchemy.url"] = str(engine.url)
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",
@@ -66,6 +66,7 @@ def run_migrations_online() -> None:
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

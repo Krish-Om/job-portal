@@ -24,8 +24,8 @@ WORKDIR /app/backend
 COPY pyproject.toml .
 COPY requirements.txt* ./
 
-# Install Python dependencies using uv
-RUN uv sync
+# Install Python dependencies using uv pip
+RUN uv pip install -e .
 
 # Copy application code
 COPY . .
