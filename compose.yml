@@ -4,11 +4,11 @@ services:
     image: postgres:15-alpine
     container_name: job-portal-postgres-dev
     env_file:
-      - ./backend/.env.dev
+      - ./backend/.env
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=devdb
+      - POSTGRES_DB=jobportaldb
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -32,7 +32,7 @@ services:
       postgres:
         condition: service_healthy
     env_file:
-      - ./backend/.env.dev
+      - ./backend/.env
     ports:
       - "8080:8000"
     volumes:
