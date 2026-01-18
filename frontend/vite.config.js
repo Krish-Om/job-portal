@@ -13,11 +13,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    middlewareMode: true,
   },
   preview: {
     host: '0.0.0.0',
     port: 5173,
-    allowedHosts: ['krishombasukala.com.np', 'www.krishombasukala.com.np', 'localhost'],
+    middlewareMode: true,
   },
   test: {
     globals: true,
