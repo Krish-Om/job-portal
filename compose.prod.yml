@@ -33,6 +33,8 @@ services:
         condition: service_healthy
     env_file:
       - ./backend/.env.production
+    environment:
+      - UV_CACHE_DIR=/tmp/.uv-cache
     networks:
       - job-portal-network-prod
     command: sh -c "uv run alembic upgrade head"
