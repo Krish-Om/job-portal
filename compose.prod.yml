@@ -35,9 +35,12 @@ services:
       - ./backend/.env.production
     environment:
       - UV_CACHE_DIR=/tmp/.uv-cache
+      - PYTHONPATH=/app/backend
+      - POSTGRES_HOST=postgres
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/jobportal
     networks:
       - job-portal-network-prod
-    command: [ "uv", "run", "alembic", "upgrade", "head" ]
+    command: [ "sh", "-c", "cd /app/backend && uv run alembic upgrade head" ]
     restart: no
 
   # Backend API
