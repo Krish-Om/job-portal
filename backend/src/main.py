@@ -11,12 +11,12 @@ import os
 load_dotenv()
 
 app = FastAPI()
-FRONTEND_URL = os.getenv("FRONTEND_URL")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
 # Configure CORS for development and production
 origins = [
     "http://localhost:5173",  # vite dev server
     "http://localhost:3000",  # react dev server
-    FRONTEND_URL,  # Production frontend URL
+    ,  # Production frontend URL
 ]
 
 app.add_middleware(
