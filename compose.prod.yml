@@ -37,7 +37,7 @@ services:
       - UV_CACHE_DIR=/tmp/.uv-cache
     networks:
       - job-portal-network-prod
-    command: sh -c "uv run alembic upgrade head"
+    command: [ "uv", "run", "alembic", "upgrade", "head" ]
     restart: no
 
   # Backend API
