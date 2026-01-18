@@ -16,7 +16,7 @@ ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
 origins = [
     "http://localhost:5173",  # vite dev server
     "http://localhost:3000",  # react dev server
-    ,  # Production frontend URL
+    ALLOWED_ORIGINS,
 ]
 
 app.add_middleware(
