@@ -6,14 +6,20 @@ from src.api import auth, jobs, applications, files  # Add files import
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+import json
 
 # gotta load these environment variables first or nothing works lol
 load_dotenv()
 
 app = FastAPI()
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
-# Configure CORS for development and production
-origins = ALLOWED_ORIGINS
+# Parse JSON string from environment variable
+try:
+    origins = (
+        json.loads(ALLOWED_ORIGINS) if ALLOWED_ORIGINS else ["http://localhost:3000"]
+    )
+except (json.JSONDecodeError, TypeError):
+    origins = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
