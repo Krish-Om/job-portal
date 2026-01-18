@@ -13,7 +13,7 @@ load_dotenv()
 app = FastAPI()
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
 # Configure CORS for development and production
-origins = (ALLOWED_ORIGINS,)
+origins = (ALLOWED_ORIGINS)
 
 app.add_middleware(
     CORSMiddleware,
