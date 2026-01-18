@@ -35,7 +35,7 @@ services:
       - ./backend/.env.production
     networks:
       - job-portal-network-prod
-    command: sh -c "cd /app && python -m alembic upgrade head"
+    command: sh -c "uv run alembic upgrade head"
     restart: no
 
   # Backend API
