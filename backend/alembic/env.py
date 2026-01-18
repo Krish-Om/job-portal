@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from logging.config import fileConfig
 from dotenv import load_dotenv
 
@@ -8,8 +9,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from .env.production
+env_file = Path(__file__).parent.parent.parent / ".env.production"
+load_dotenv(env_file)
 
 # Add the project root directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
@@ -23,8 +25,12 @@ from src.models.application import Application
 # this is the Alembic Config object
 config = context.config
 
-# Get database URL from environment
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
+# Get database URL from environment with fallback
+database_url = (
+    os.getenv("DATABASE_URL")
+    or "postgresql://postgres:ValidPass@localhost:5432/jobportal"
+)
+config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging
 if config.config_file_name is not None:
