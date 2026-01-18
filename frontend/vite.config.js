@@ -16,7 +16,7 @@ export default defineConfig({
     middlewareMode: true,
   },
   preview: {
-    host: '0.0.0.0',
+    host: 'krishombasukala.com.np',
     port: 5173,
     allowedHosts: ['krishombasukala.com.np', 'www.krishombasukala.com.np', 'localhost'],
     hmr: false,
