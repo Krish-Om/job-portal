@@ -57,10 +57,6 @@ coverage.xml
 .pytest_cache/
 .tox/
 
-# Alembic - but keep the migrations
-alembic.ini
-alembic/versions/
-
 # Docker
 Dockerfile*
 docker-compose*

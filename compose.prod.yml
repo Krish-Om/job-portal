@@ -39,6 +39,7 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-jobportal}
+      UV_CACHE_DIR: /tmp/.uv-cache
     networks:
       - job-portal-network-prod
     command: [ "uv", "run", "alembic", "upgrade", "head" ]

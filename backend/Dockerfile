@@ -25,7 +25,7 @@ COPY pyproject.toml .
 COPY requirements.txt* ./
 
 # Install Python dependencies using uv
-RUN uv pip install --no-cache -r pyproject.toml
+RUN uv sync
 
 # Copy application code
 COPY . .
