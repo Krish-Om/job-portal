@@ -13,7 +13,7 @@ from passlib.context import CryptContext
 
 # had to do this crazy path stuff cuz the env file wasn't loading right :/
 BASE_DIR = pathlib.Path(__file__).parent.parent.parent
-ENV_PATH = BASE_DIR / ".env"
+ENV_PATH = BASE_DIR / ".env.production"
 load_dotenv(dotenv_path=ENV_PATH)
 
 # these print statements saved my life when debugging
