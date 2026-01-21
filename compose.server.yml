@@ -1,0 +1,120 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: job-portal-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ValidPass
+      POSTGRES_DB: jobportal
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d jobportal -h localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - job-portal-network-prod
+
+  migrations:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    image: ghcr.io/krish-om/job-portal-backend:latest
+    env_file:
+      - ./backend/.env.production
+    environment:
+      DATABASE_URL: postgresql://postgres:ValidPass@postgres:5432/jobportal
+      UV_CACHE_DIR: /tmp/.uv-cache
+    networks:
+      - job-portal-network-prod
+    command: [ "uv", "run", "alembic", "upgrade", "head" ]
+
+  backend:
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+    image: ghcr.io/krish-om/job-portal-backend:latest
+    container_name: job-portal-backend-prod
+    ports:
+      - "5000:8000"
+    env_file:
+      - ./backend/.env.production
+    environment:
+      DATABASE_URL: postgresql://postgres:ValidPass@postgres:5432/jobportal
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - job-portal-network-prod
+    restart: always
+
+  frontend:
+    depends_on:
+      backend:
+        condition: service_healthy
+    image: ghcr.io/krish-om/job-portal-frontend:latest
+    container_name: job-portal-frontend-prod
+    ports:
+      - "3000:5173"
+    env_file:
+      - ./frontend/.env.production
+    networks:
+      - job-portal-network-prod
+    restart: always
+
+  minio:
+    image: minio/minio:latest
+    restart: always
+    env_file:
+      - ./.env.minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-krishom}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-ValidPass#3679}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data_prod:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - job-portal-network-prod
+
+  minio-setup:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    env_file:
+      - ./.env.minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-krishom}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-ValidPass#3679}
+    networks:
+      - job-portal-network-prod
+    entrypoint: >
+      /bin/sh -c " /usr/bin/mc config host add myminio http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}; /usr/bin/mc mb --ignore-existing myminio/job-portal-resumes; /usr/bin/mc policy set download myminio/job-portal-resumes; exit 0; "
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  minio_data_prod:
+    driver: local
+
+networks:
+  job-portal-network-prod:
+    driver: bridge
