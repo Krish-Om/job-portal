@@ -4,26 +4,17 @@ from src.database.init_db import init_db
 from src.models import user, job, application
 from src.api import auth, jobs, applications, files  # Add files import
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-from pathlib import Path
 import os
 import json
 
-# Load environment variables from .env.production explicitly
-env_path = Path(__file__).parent.parent.parent / ".env.production"
-load_dotenv(dotenv_path=env_path)
-
 app = FastAPI()
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
-print(f"DEBUG: ALLOWED_ORIGINS = {ALLOWED_ORIGINS}")  # Debug print
 # Parse JSON string from environment variable
 try:
     origins = (
         json.loads(ALLOWED_ORIGINS) if ALLOWED_ORIGINS else ["http://localhost:3000"]
     )
-    print(f"DEBUG: origins parsed = {origins}")  # Debug print
 except (json.JSONDecodeError, TypeError) as e:
-    print(f"DEBUG: JSON parse error: {e}")  # Debug print
     origins = ["http://localhost:3000"]
 
 app.add_middleware(

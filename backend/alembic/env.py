@@ -1,17 +1,11 @@
 import os
 import sys
-from pathlib import Path
 from logging.config import fileConfig
-from dotenv import load_dotenv
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-
-# Load environment variables from .env.production
-env_file = Path(__file__).parent.parent.parent / ".env.production"
-load_dotenv(env_file)
 
 # Add the project root directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
