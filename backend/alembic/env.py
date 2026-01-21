@@ -31,8 +31,6 @@ db_url = (
     os.getenv("DATABASE_URL")
     or "postgresql://jobportaluser:JobPortal#2025@localhost:5433/jobportal"
 )
-# Replace service name with localhost for local development
-db_url = db_url.replace("@postgres:", "@localhost:")
 config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.
