@@ -4,7 +4,14 @@ from src.database.init_db import init_db
 from src.models import user, job, application
 from src.api import auth, jobs, applications, files
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from pathlib import Path
 import os
+
+# Load environment variables (works in both container and local dev)
+# Try to load from .env.production in the project root
+env_file = Path(__file__).parent.parent.parent / ".env.production"
+load_dotenv(env_file)
 
 app = FastAPI()
 
@@ -14,10 +21,13 @@ for i in range(1, 10):  # Support up to 9 origins
     origin = os.getenv(f"ALLOWED_ORIGIN_{i}")
     if origin:
         origins.append(origin)
+        print(f"Loaded ALLOWED_ORIGIN_{i}: {origin}")
 
 # Fallback to localhost if no origins defined
 if not origins:
     origins = ["http://localhost:3000"]
+
+print(f"DEBUG: Final origins list: {origins}")
 
 app.add_middleware(
     CORSMiddleware,
