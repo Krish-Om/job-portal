@@ -3,9 +3,28 @@ import axios from 'axios';
 // Always use the real API
 const useMockApi = false;
 
+// Determine API URL at runtime based on current hostname
+const getApiUrl = () => {
+  // In development/build time, check for environment variable
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // At runtime, intelligently determine API endpoint
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
+  
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8000/api';
+  }
+  
+  // For production, use HTTPS and api subdomain
+  return `${protocol}//api.${hostname}`;
+};
+
 // setup axios to talk to our backend
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  baseURL: getApiUrl(),
   timeout: import.meta.env.VITE_API_TIMEOUT || 10000,
   headers: {
     'Content-Type': 'application/json',
