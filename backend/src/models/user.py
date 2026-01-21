@@ -46,6 +46,13 @@ class User(SQLModel, table=True):
 class UserCreate(UserBase):
     password: str
 
+    @field_validator("password")
+    def validate_password(cls, v):
+        if not v or len(v) < 6:
+            raise ValueError("Password must be at least 6 characters")
+        # Note: passwords longer than 72 bytes will be truncated during hashing
+        return v
+
     def to_user(self) -> User:
         return User(
             username=self.username,
