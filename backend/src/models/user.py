@@ -4,9 +4,11 @@ from typing import Optional, List
 from pydantic import EmailStr, field_validator
 from src.utils.password import get_password_hash
 
+
 class UserRole(str, Enum):
     JOBSEEKER = "jobseeker"
     EMPLOYER = "employer"
+
 
 class UserBase(SQLModel):
     id: Optional[int] = None
@@ -15,11 +17,12 @@ class UserBase(SQLModel):
     role: UserRole
     is_active: bool = Field(default=True)
 
-    @field_validator('role')
+    @field_validator("role")
     def validate_role(cls, v):
         if v not in [UserRole.JOBSEEKER, UserRole.EMPLOYER]:
-            raise ValueError('Role must be either jobseeker or employer')
+            raise ValueError("Role must be either jobseeker or employer")
         return v
+
 
 class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -28,23 +31,17 @@ class User(SQLModel, table=True):
     hashed_password: str
     role: UserRole
     is_active: bool = Field(default=True)
-    password: Optional[str] = None  # Only used for validation, not stored
 
     # Relationships with cascade
     applications: List["Application"] = Relationship(
         back_populates="user",  # Changed from "applicant" to "user"
-        sa_relationship_kwargs={
-            "cascade": "all, delete-orphan",
-            "lazy": "joined"
-        }
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "joined"},
     )
     posted_jobs: List["Job"] = Relationship(
         back_populates="employer",
-        sa_relationship_kwargs={
-            "cascade": "all, delete-orphan",
-            "lazy": "joined"
-        }
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "joined"},
     )
+
 
 class UserCreate(UserBase):
     password: str
@@ -55,12 +52,14 @@ class UserCreate(UserBase):
             email=self.email,
             role=self.role,
             is_active=self.is_active,
-            hashed_password=get_password_hash(self.password)
+            hashed_password=get_password_hash(self.password),
         )
+
 
 class UserInDB(UserBase):
     id: Optional[int] = Field(default=None, primary_key=True)
     password_hash: str
+
 
 class UserUpdate(SQLModel):
     username: Optional[str] = None
