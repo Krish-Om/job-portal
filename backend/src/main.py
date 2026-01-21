@@ -2,32 +2,28 @@ from fastapi import FastAPI
 from src.database.session import engine
 from src.database.init_db import init_db
 from src.models import user, job, application
-from src.api import auth, jobs, applications, files  # Add files import
+from src.api import auth, jobs, applications, files
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import json
 
 app = FastAPI()
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
-# Parse JSON string from environment variable
-try:
-    origins = (
-        json.loads(ALLOWED_ORIGINS) if ALLOWED_ORIGINS else ["http://localhost:3000"]
-    )
-except (json.JSONDecodeError, TypeError) as e:
+
+# Build allowed origins list from environment variables
+origins = []
+for i in range(1, 10):  # Support up to 9 origins
+    origin = os.getenv(f"ALLOWED_ORIGIN_{i}")
+    if origin:
+        origins.append(origin)
+
+# Fallback to localhost if no origins defined
+if not origins:
     origins = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for now to test
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=[
-        "GET",
-        "POST",
-        "UPDATE",
-        "DELETE",
-        "PUT",
-    ],
+    allow_methods=["GET", "POST", "UPDATE", "DELETE", "PUT"],
     allow_headers=["*"],
 )
 
