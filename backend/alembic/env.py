@@ -2,11 +2,16 @@ from logging.config import fileConfig
 import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+
+# Load environment variables from .env.production
+env_file = Path(__file__).parent.parent / ".env.production"
+load_dotenv(env_file)
 
 # Add backend to path so we can import src modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -21,11 +26,13 @@ from src.models import SQLModel
 # access to the values within the .ini file in use.
 config = context.config
 
-# Set database URL from environment variable
+# Set database URL from environment variable or use localhost for local development
 db_url = (
     os.getenv("DATABASE_URL")
-    or "postgresql://postgres:ValidPass@localhost:5432/jobportal"
+    or "postgresql://jobportaluser:JobPortal#2025@localhost:5433/jobportal"
 )
+# Replace service name with localhost for local development
+db_url = db_url.replace("@postgres:", "@localhost:")
 config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.
