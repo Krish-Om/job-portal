@@ -9,8 +9,8 @@ from pathlib import Path
 import os
 
 # Load environment variables (works in both container and local dev)
-# In Docker: __file__ = /app/backend/src/main.py, so go up 2 levels to /app/backend
-# In local: __file__ = backend/src/main.py, so go up 2 levels to .
+# In Docker: WORKDIR=/app/backend, __file__=/app/backend/src/main.py
+# Use relative path from __file__ to find .env.production in parent directory
 env_file = Path(__file__).parent.parent / ".env.production"
 load_dotenv(env_file)
 
