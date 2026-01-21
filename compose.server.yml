@@ -30,7 +30,6 @@ services:
     env_file:
       - ./backend/.env.production
     environment:
-      DATABASE_URL: postgresql://jobportaluser:JobPortal#2025@postgres:5432/jobportal
       UV_CACHE_DIR: /tmp/.uv-cache
     networks:
       - job-portal-network-prod
@@ -48,8 +47,6 @@ services:
       - "5000:8000"
     env_file:
       - ./backend/.env.production
-    environment:
-      DATABASE_URL: postgresql://jobportaluser:JobPortal#2025@postgres:5432/jobportal
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8000/ || exit 1" ]
       interval: 30s
